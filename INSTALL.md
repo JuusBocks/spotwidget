@@ -54,6 +54,12 @@ From your main Mac, create a zip:
 
 Upload `dist/Widgify-0.1.0-macOS.zip` to a GitHub Release.
 
+Or build and publish the private GitHub release in one step:
+
+```bash
+./scripts/release-github.sh --team-id YOUR_TEAM_ID --version 0.1.0
+```
+
 On the MacBook:
 
 1. Download the zip from the GitHub Release.

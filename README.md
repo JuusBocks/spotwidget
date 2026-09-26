@@ -138,6 +138,24 @@ dist/Widgify-0.1.0-macOS.zip
 
 For personal testing, a private GitHub Release is fine. For a smooth public install, sign the app with a Developer ID certificate and notarize it with Apple before uploading.
 
+## Create A GitHub Release
+
+For private testing:
+
+```bash
+./scripts/release-github.sh --team-id YOUR_TEAM_ID --version 0.1.0
+```
+
+This builds `dist/Widgify-0.1.0-macOS.zip`, creates a `v0.1.0` GitHub release, and uploads the zip plus its SHA-256 file.
+
+For a stable release:
+
+```bash
+./scripts/release-github.sh --team-id YOUR_TEAM_ID --version 0.1.0 --stable
+```
+
+Only use `--stable` for a broadly shared release after the app has been Developer ID signed and notarized.
+
 ## Homebrew Distribution
 
 Widgify can be distributed through Homebrew, but the clean version requires a signed and notarized `.zip` or `.dmg` release.
