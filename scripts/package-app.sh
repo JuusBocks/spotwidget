@@ -1,0 +1,126 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+DERIVED_DATA_PATH="$ROOT_DIR/build/DerivedData"
+CONFIGURATION="${CONFIGURATION:-Release}"
+TEAM_ID="${DEVELOPMENT_TEAM:-}"
+VERSION="${VERSION:-}"
+DIST_DIR="$ROOT_DIR/dist"
+
+usage() {
+  cat <<'USAGE'
+Usage: ./scripts/package-app.sh [--team-id TEAM_ID] [--debug] [--version VERSION]
+
+Builds Widgify and creates a downloadable zip in dist/.
+
+Options:
+  --team-id TEAM_ID   Apple Developer Team ID. Optional after signing is
+                      already configured in Xcode.
+  --debug             Package a Debug build instead of Release.
+  --version VERSION   Version label for the zip filename.
+  -h, --help          Show this help.
+USAGE
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --team-id)
+      TEAM_ID="${2:-}"
+      if [[ -z "$TEAM_ID" ]]; then
+        echo "Missing value for --team-id" >&2
+        exit 2
+      fi
+      shift 2
+      ;;
+    --debug)
+      CONFIGURATION="Debug"
+      shift
+      ;;
+    --version)
+      VERSION="${2:-}"
+      if [[ -z "$VERSION" ]]; then
+        echo "Missing value for --version" >&2
+        exit 2
+      fi
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Unknown option: $1" >&2
+      usage
+      exit 2
+      ;;
+  esac
+done
+
+if ! command -v xcodebuild >/dev/null 2>&1; then
+  echo "xcodebuild was not found. Install Xcode from the Mac App Store first." >&2
+  exit 1
+fi
+
+if [[ -z "${DEVELOPER_DIR:-}" && -d "/Applications/Xcode.app/Contents/Developer" ]]; then
+  export DEVELOPER_DIR="/Applications/Xcode.app/Contents/Developer"
+fi
+
+if [[ -z "$VERSION" ]]; then
+  VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$ROOT_DIR/Resources/Info.plist" 2>/dev/null || true)"
+fi
+
+if [[ "$VERSION" == *'$('* ]]; then
+  VERSION=""
+fi
+
+if [[ -z "$VERSION" ]]; then
+  VERSION="$(awk -F' = ' '/MARKETING_VERSION/ { gsub(/;/, "", $2); print $2; exit }' "$ROOT_DIR/SpotifyWidgetMac.xcodeproj/project.pbxproj")"
+fi
+
+if [[ -z "$VERSION" ]]; then
+  VERSION="local"
+fi
+
+XCODEBUILD_ARGS=(
+  -project "$ROOT_DIR/SpotifyWidgetMac.xcodeproj"
+  -scheme SpotifyWidgetMac
+  -configuration "$CONFIGURATION"
+  -destination "platform=macOS"
+  -derivedDataPath "$DERIVED_DATA_PATH"
+  -allowProvisioningUpdates
+  build
+)
+
+if [[ -n "$TEAM_ID" ]]; then
+  XCODEBUILD_ARGS+=(DEVELOPMENT_TEAM="$TEAM_ID")
+fi
+
+echo "Building Widgify $CONFIGURATION..."
+xcodebuild "${XCODEBUILD_ARGS[@]}"
+
+BUILT_APP="$DERIVED_DATA_PATH/Build/Products/$CONFIGURATION/Widgify.app"
+ZIP_PATH="$DIST_DIR/Widgify-$VERSION-macOS.zip"
+SHA_PATH="$ZIP_PATH.sha256"
+
+if [[ ! -d "$BUILT_APP" ]]; then
+  echo "Build finished, but Widgify.app was not found at $BUILT_APP" >&2
+  exit 1
+fi
+
+mkdir -p "$DIST_DIR"
+rm -f "$ZIP_PATH" "$SHA_PATH"
+
+echo "Creating $ZIP_PATH..."
+ditto -c -k --sequesterRsrc --keepParent "$BUILT_APP" "$ZIP_PATH"
+shasum -a 256 "$ZIP_PATH" | tee "$SHA_PATH"
+
+cat <<DONE
+
+Created:
+  $ZIP_PATH
+  $SHA_PATH
+
+Upload the zip to a GitHub Release for easy downloading on another Mac.
+For wider distribution, sign with Developer ID and notarize before shipping.
+DONE

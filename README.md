@@ -43,6 +43,24 @@ If Xcode says a bundle identifier is unavailable, change `leounib` to something 
 
 ## Install Locally
 
+The easiest route on a new Mac is the install script:
+
+```bash
+git clone git@github.com:JuusBocks/widgify.git
+cd widgify
+./scripts/install-local.sh --team-id YOUR_TEAM_ID
+```
+
+After signing has been configured once in Xcode, the team flag is usually optional:
+
+```bash
+./scripts/install-local.sh
+```
+
+The script builds Widgify, copies it to `/Applications`, registers the widget extension, refreshes WidgetKit, and opens the menu bar helper.
+
+For a dedicated second-Mac checklist, see [INSTALL.md](INSTALL.md).
+
 After a successful Xcode build, copy the app into `/Applications` and launch it:
 
 ```bash
@@ -103,6 +121,60 @@ build/Widgify.app
 ```
 
 This path is useful for development, but the Xcode build with your Apple Team is the recommended route for a real desktop widget install.
+
+## Package A Downloadable Zip
+
+To create a zip that can be uploaded to a GitHub Release:
+
+```bash
+./scripts/package-app.sh --team-id YOUR_TEAM_ID --version 0.1.0
+```
+
+The package is written to:
+
+```text
+dist/Widgify-0.1.0-macOS.zip
+```
+
+For personal testing, a private GitHub Release is fine. For a smooth public install, sign the app with a Developer ID certificate and notarize it with Apple before uploading.
+
+## Homebrew Distribution
+
+Widgify can be distributed through Homebrew, but the clean version requires a signed and notarized `.zip` or `.dmg` release.
+
+Recommended path:
+
+1. Create a release build in Xcode.
+2. Sign the app with a Developer ID Application certificate.
+3. Notarize it with Apple.
+4. Zip the notarized `Widgify.app`.
+5. Upload the zip to a GitHub release.
+6. Create a Homebrew tap with a cask formula that downloads and installs the app.
+
+Example cask shape:
+
+```ruby
+cask "widgify" do
+  version "1.0.0"
+  sha256 "REPLACE_WITH_RELEASE_ZIP_SHA256"
+
+  url "https://github.com/JuusBocks/widgify/releases/download/v#{version}/Widgify-#{version}.zip"
+  name "Widgify"
+  desc "Native macOS desktop widget for Spotify"
+  homepage "https://github.com/JuusBocks/widgify"
+
+  app "Widgify.app"
+end
+```
+
+Users would install it with:
+
+```bash
+brew tap JuusBocks/widgify
+brew install --cask widgify
+```
+
+For a private GitHub repo, Homebrew installation is more awkward because the download needs authentication. A private tap can work for collaborators with GitHub access, but public distribution is much smoother after the repo or release artifact is public.
 
 ## Troubleshooting
 
