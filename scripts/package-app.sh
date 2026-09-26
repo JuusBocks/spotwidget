@@ -7,6 +7,7 @@ CONFIGURATION="${CONFIGURATION:-Release}"
 TEAM_ID="${DEVELOPMENT_TEAM:-}"
 VERSION="${VERSION:-}"
 DIST_DIR="$ROOT_DIR/dist"
+DMG_VOLUME_NAME="Widgify"
 
 usage() {
   cat <<'USAGE'
@@ -66,6 +67,9 @@ if [[ -z "${DEVELOPER_DIR:-}" && -d "/Applications/Xcode.app/Contents/Developer"
   export DEVELOPER_DIR="/Applications/Xcode.app/Contents/Developer"
 fi
 
+export CLANG_MODULE_CACHE_PATH="${CLANG_MODULE_CACHE_PATH:-$ROOT_DIR/.build/module-cache}"
+mkdir -p "$CLANG_MODULE_CACHE_PATH"
+
 if [[ -z "$VERSION" ]]; then
   VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$ROOT_DIR/Resources/Info.plist" 2>/dev/null || true)"
 fi
@@ -122,9 +126,19 @@ shasum -a 256 "$ZIP_PATH" | tee "$SHA_PATH"
 echo "Creating $DMG_PATH..."
 mkdir -p "$DMG_STAGING_DIR"
 cp -R "$BUILT_APP" "$DMG_STAGING_DIR/"
-ln -s /Applications "$DMG_STAGING_DIR/Applications"
+ln -s /Applications "$DMG_STAGING_DIR/→ Applications - drag Widgify here"
+cat > "$DMG_STAGING_DIR/READ ME - Next Steps.txt" <<'STEPS'
+Install Widgify
+
+1. Drag Widgify.app onto "→ Applications - drag Widgify here".
+2. Open Widgify from Applications.
+3. Use Privacy & Security > Open Anyway if macOS blocks it.
+4. Add Widgify from desktop widgets.
+5. Play Spotify and use the widget.
+STEPS
+
 hdiutil create \
-  -volname "Widgify" \
+  -volname "$DMG_VOLUME_NAME" \
   -srcfolder "$DMG_STAGING_DIR" \
   -ov \
   -format UDZO \
