@@ -2,6 +2,18 @@
 
 Use this when testing Widgify on another Mac that has access to the private GitHub repo.
 
+## Quick Install
+
+1. Download `Widgify-0.1.0-macOS.dmg` from the GitHub Release.
+2. Open the DMG.
+3. Drag `Widgify.app` into `Applications`.
+4. Open `Widgify.app`.
+5. If macOS blocks the app, open `System Settings` > `Privacy & Security`, scroll down, choose `Open Anyway`, then open Widgify again.
+6. On the desktop, right-click and choose `Edit Widgets`.
+7. Search for `Widgify`, add the widget, then start playing something in Spotify.
+
+Widgify shows album art, playback controls, live progress, and lyrics when they are available. Some songs may not have lyrics, and some lyric views may need a quick interaction with the widget before they show. When LRCLIB has the track, Widgify supports a wide range of synced lyrics.
+
 ## Best Test Path
 
 This is the most reliable path while Widgify is still a private developer build.
@@ -44,15 +56,15 @@ The installer builds the app, copies it to `/Applications`, registers the widget
 
 Allow Automation access if macOS asks. Widgify needs it to read and control Spotify.
 
-## Downloadable Zip Path
+## Downloadable DMG Path
 
-From your main Mac, create a zip:
+From your main Mac, create release packages:
 
 ```bash
 ./scripts/package-app.sh --team-id YOUR_TEAM_ID --version 0.1.0
 ```
 
-Upload `dist/Widgify-0.1.0-macOS.zip` to a GitHub Release.
+Upload `dist/Widgify-0.1.0-macOS.dmg` to a GitHub Release.
 
 Or build and publish the private GitHub release in one step:
 
@@ -62,13 +74,14 @@ Or build and publish the private GitHub release in one step:
 
 On the MacBook:
 
-1. Download the zip from the GitHub Release.
-2. Unzip it.
-3. Move `Widgify.app` to `/Applications`.
+1. Download the DMG from the GitHub Release.
+2. Open it.
+3. Drag `Widgify.app` onto `Applications`.
 4. Open `Widgify.app`.
-5. Add the widget from `Edit Widgets`.
+5. If macOS blocks it, go to `System Settings` > `Privacy & Security`, scroll down, click `Open Anyway`, then open it again.
+6. Add the widget from `Edit Widgets`.
 
-For personal testing, macOS may still warn about the app if it is not Developer ID signed and notarized. For a smooth public install, the release zip should be signed with a Developer ID certificate and notarized by Apple.
+For personal testing, macOS may still warn about the app if it is not Developer ID signed and notarized. For a smooth public install, the release DMG should contain a Developer ID signed and notarized app.
 
 ## Troubleshooting
 

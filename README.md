@@ -122,19 +122,22 @@ build/Widgify.app
 
 This path is useful for development, but the Xcode build with your Apple Team is the recommended route for a real desktop widget install.
 
-## Package A Downloadable Zip
+## Package A Downloadable App
 
-To create a zip that can be uploaded to a GitHub Release:
+To create release packages that can be uploaded to a GitHub Release:
 
 ```bash
 ./scripts/package-app.sh --team-id YOUR_TEAM_ID --version 0.1.0
 ```
 
-The package is written to:
+The packages are written to:
 
 ```text
+dist/Widgify-0.1.0-macOS.dmg
 dist/Widgify-0.1.0-macOS.zip
 ```
+
+Use the DMG for the familiar drag-to-Applications install experience. The zip is useful for checksums, automation, and Homebrew-style packaging.
 
 For personal testing, a private GitHub Release is fine. For a smooth public install, sign the app with a Developer ID certificate and notarize it with Apple before uploading.
 
@@ -146,7 +149,7 @@ For private testing:
 ./scripts/release-github.sh --team-id YOUR_TEAM_ID --version 0.1.0
 ```
 
-This builds `dist/Widgify-0.1.0-macOS.zip`, creates a `v0.1.0` GitHub release, and uploads the zip plus its SHA-256 file.
+This builds `dist/Widgify-0.1.0-macOS.dmg` and `dist/Widgify-0.1.0-macOS.zip`, creates a `v0.1.0` GitHub release, and uploads both files plus SHA-256 files.
 
 For a stable release:
 
@@ -165,8 +168,8 @@ Recommended path:
 1. Create a release build in Xcode.
 2. Sign the app with a Developer ID Application certificate.
 3. Notarize it with Apple.
-4. Zip the notarized `Widgify.app`.
-5. Upload the zip to a GitHub release.
+4. Package the notarized `Widgify.app` as a zip or DMG.
+5. Upload the package to a GitHub release.
 6. Create a Homebrew tap with a cask formula that downloads and installs the app.
 
 Example cask shape:

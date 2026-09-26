@@ -12,7 +12,7 @@ usage() {
   cat <<'USAGE'
 Usage: ./scripts/package-app.sh [--team-id TEAM_ID] [--debug] [--version VERSION]
 
-Builds Widgify and creates a downloadable zip in dist/.
+Builds Widgify and creates downloadable zip and dmg packages in dist/.
 
 Options:
   --team-id TEAM_ID   Apple Developer Team ID. Optional after signing is
@@ -102,6 +102,9 @@ xcodebuild "${XCODEBUILD_ARGS[@]}"
 BUILT_APP="$DERIVED_DATA_PATH/Build/Products/$CONFIGURATION/Widgify.app"
 ZIP_PATH="$DIST_DIR/Widgify-$VERSION-macOS.zip"
 SHA_PATH="$ZIP_PATH.sha256"
+DMG_STAGING_DIR="$DIST_DIR/dmg-staging"
+DMG_PATH="$DIST_DIR/Widgify-$VERSION-macOS.dmg"
+DMG_SHA_PATH="$DMG_PATH.sha256"
 
 if [[ ! -d "$BUILT_APP" ]]; then
   echo "Build finished, but Widgify.app was not found at $BUILT_APP" >&2
@@ -109,18 +112,34 @@ if [[ ! -d "$BUILT_APP" ]]; then
 fi
 
 mkdir -p "$DIST_DIR"
-rm -f "$ZIP_PATH" "$SHA_PATH"
+rm -rf "$DMG_STAGING_DIR"
+rm -f "$ZIP_PATH" "$SHA_PATH" "$DMG_PATH" "$DMG_SHA_PATH"
 
 echo "Creating $ZIP_PATH..."
 ditto -c -k --sequesterRsrc --keepParent "$BUILT_APP" "$ZIP_PATH"
 shasum -a 256 "$ZIP_PATH" | tee "$SHA_PATH"
+
+echo "Creating $DMG_PATH..."
+mkdir -p "$DMG_STAGING_DIR"
+cp -R "$BUILT_APP" "$DMG_STAGING_DIR/"
+ln -s /Applications "$DMG_STAGING_DIR/Applications"
+hdiutil create \
+  -volname "Widgify" \
+  -srcfolder "$DMG_STAGING_DIR" \
+  -ov \
+  -format UDZO \
+  "$DMG_PATH"
+shasum -a 256 "$DMG_PATH" | tee "$DMG_SHA_PATH"
+rm -rf "$DMG_STAGING_DIR"
 
 cat <<DONE
 
 Created:
   $ZIP_PATH
   $SHA_PATH
+  $DMG_PATH
+  $DMG_SHA_PATH
 
-Upload the zip to a GitHub Release for easy downloading on another Mac.
+Upload the dmg to a GitHub Release for the familiar drag-and-drop install.
 For wider distribution, sign with Developer ID and notarize before shipping.
 DONE
