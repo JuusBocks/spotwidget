@@ -1,6 +1,7 @@
 .build/
 build/
 dist/
+reports/
 .DS_Store
 DerivedData/
 *.xcuserstate

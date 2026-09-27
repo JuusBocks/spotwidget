@@ -122,6 +122,24 @@ build/Widgify.app
 
 This path is useful for development, but the Xcode build with your Apple Team is the recommended route for a real desktop widget install.
 
+## Resource Smoke Test
+
+To check that Widgify stays light while Spotify is playing, run:
+
+```bash
+./scripts/resource-smoke-test.sh --launch --duration 300
+```
+
+The test samples Widgify once per second, writes a CSV and text report to `reports/`, and fails if average CPU rises above `2%` or memory rises above `150 MB`.
+
+For a longer test on another Mac:
+
+```bash
+./scripts/resource-smoke-test.sh --launch --duration 1800
+```
+
+While it runs, play Spotify, skip a few tracks, pause/resume, and toggle shuffle. The widget itself is hosted by macOS, so this script focuses on the Widgify helper process that does the Spotify polling and command bridge.
+
 ## Package A Downloadable App
 
 To create release packages that can be uploaded to a GitHub Release:
