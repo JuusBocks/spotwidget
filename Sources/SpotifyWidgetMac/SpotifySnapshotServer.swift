@@ -43,6 +43,8 @@ final class SpotifySnapshotServer: @unchecked Sendable {
     static let shared = SpotifySnapshotServer()
     static let port: UInt16 = 47391
     private static let widgetKind = "SpotifyWidgetPlayer"
+    private static let snapshotRefreshInterval: TimeInterval = 1
+    private static let timelineKeepAliveInterval: TimeInterval = 60
 
     private let queue = DispatchQueue(label: "com.leounib.Widgify.snapshot-server")
     private let lock = NSLock()
@@ -114,11 +116,11 @@ final class SpotifySnapshotServer: @unchecked Sendable {
 
     private func startRefreshTimer() {
         let timer = DispatchSource.makeTimerSource(queue: queue)
-        timer.schedule(deadline: .now() + 2, repeating: 5)
+        timer.schedule(deadline: .now() + Self.snapshotRefreshInterval, repeating: Self.snapshotRefreshInterval, leeway: .milliseconds(250))
         timer.setEventHandler { [weak self] in
             guard let self else { return }
             let didChange = self.refreshSnapshot()
-            if didChange || Date().timeIntervalSince(self.lastTimelineReload) > 60 {
+            if didChange || Date().timeIntervalSince(self.lastTimelineReload) > Self.timelineKeepAliveInterval {
                 self.reloadWidgetTimelines()
             }
         }
