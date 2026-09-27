@@ -68,6 +68,8 @@ struct SpotifyLyrics: Equatable {
 }
 
 enum LyricsPageStore {
+    private static let cache = LyricsPageCache()
+
     static func key(for snapshot: SpotifySnapshot) -> String {
         [
             snapshot.title.lowercased(),
@@ -78,7 +80,7 @@ enum LyricsPageStore {
     }
 
     static func page(for trackKey: String, maxPage: Int) -> Int {
-        min(max(UserDefaults.standard.integer(forKey: storageKey(trackKey)), 0), maxPage)
+        min(max(cache.page(for: trackKey), 0), maxPage)
     }
 
     static func move(trackKey: String, direction: LyricsPageDirection, maxPage: Int) {
@@ -90,11 +92,7 @@ enum LyricsPageStore {
         case .next:
             nextPage = min(maxPage, currentPage + 1)
         }
-        UserDefaults.standard.set(nextPage, forKey: storageKey(trackKey))
-    }
-
-    private static func storageKey(_ trackKey: String) -> String {
-        "lyrics-page-\(trackKey)"
+        cache.store(nextPage, for: trackKey)
     }
 }
 
@@ -157,7 +155,7 @@ enum SpotifyReader {
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
         request.timeoutInterval = 0.8
 
-        guard let data = try? URLSession.shared.synchronousData(for: request),
+        guard let data = try? EphemeralNetworkSession.shared.synchronousData(for: request),
               let hosted = try? JSONDecoder().decode(HostedSnapshot.self, from: data) else {
             return nil
         }
@@ -235,7 +233,7 @@ enum SpotifyReader {
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
         request.timeoutInterval = 0.8
 
-        guard let (_, response) = try? URLSession.shared.synchronousResponse(for: request),
+        guard let (_, response) = try? EphemeralNetworkSession.shared.synchronousResponse(for: request),
               let httpResponse = response as? HTTPURLResponse else {
             return false
         }
@@ -259,10 +257,10 @@ enum SpotifyReader {
         }
 
         var request = URLRequest(url: url)
-        request.cachePolicy = .returnCacheDataElseLoad
+        request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
         request.timeoutInterval = timeout
 
-        guard let data = try? URLSession.shared.synchronousData(for: request), !data.isEmpty else {
+        guard let data = try? EphemeralNetworkSession.shared.synchronousData(for: request), !data.isEmpty else {
             return nil
         }
 
@@ -338,11 +336,11 @@ enum LyricsReader {
         }
 
         var request = URLRequest(url: url)
-        request.cachePolicy = .returnCacheDataElseLoad
+        request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
         request.timeoutInterval = 1.5
         request.setValue("Widgify/1.0 (https://lrclib.net)", forHTTPHeaderField: "User-Agent")
 
-        guard let (data, response) = try? URLSession.shared.synchronousResponse(for: request),
+        guard let (data, response) = try? EphemeralNetworkSession.shared.synchronousResponse(for: request),
               let httpResponse = response as? HTTPURLResponse,
               httpResponse.statusCode == 200,
               let record = try? JSONDecoder().decode(LRCLIBRecord.self, from: data) else {
@@ -422,6 +420,23 @@ enum LyricsReader {
     }
 }
 
+private final class LyricsPageCache: @unchecked Sendable {
+    private let lock = NSLock()
+    private var values: [String: Int] = [:]
+
+    func page(for key: String) -> Int {
+        lock.lock()
+        defer { lock.unlock() }
+        return values[key] ?? 0
+    }
+
+    func store(_ page: Int, for key: String) {
+        lock.lock()
+        values[key] = page
+        lock.unlock()
+    }
+}
+
 private final class LyricsCache: @unchecked Sendable {
     private let lock = NSLock()
     private var values: [String: SpotifyLyrics] = [:]
@@ -437,6 +452,15 @@ private final class LyricsCache: @unchecked Sendable {
         values[key] = lyrics
         lock.unlock()
     }
+}
+
+private enum EphemeralNetworkSession {
+    static let shared: URLSession = {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.urlCache = nil
+        configuration.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+        return URLSession(configuration: configuration)
+    }()
 }
 
 private final class RemoteDataCache: @unchecked Sendable {
