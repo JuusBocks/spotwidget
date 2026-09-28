@@ -9,6 +9,10 @@ struct SpotifyEntry: TimelineEntry {
 }
 
 struct SpotifyProvider: TimelineProvider {
+    private static let playingTimelineStep: TimeInterval = 1
+    private static let minimumPlayingTimelineHorizon: TimeInterval = 90
+    private static let maximumPlayingTimelineHorizon: TimeInterval = 300
+
     func placeholder(in context: Context) -> SpotifyEntry {
         SpotifyEntry(date: Date(), snapshot: .idle, lyrics: .idle)
     }
@@ -33,8 +37,11 @@ struct SpotifyProvider: TimelineProvider {
         }
 
         let remaining = max(0, snapshot.duration - snapshot.position)
-        let horizon = min(35, max(14, remaining + 2))
-        return stride(from: 0, through: horizon, by: 1).map { offset in
+        let horizon = min(
+            Self.maximumPlayingTimelineHorizon,
+            max(Self.minimumPlayingTimelineHorizon, remaining + 2)
+        )
+        return stride(from: 0, through: horizon, by: Self.playingTimelineStep).map { offset in
             var projectedSnapshot = snapshot
             projectedSnapshot.position = min(snapshot.duration, snapshot.position + offset)
             return SpotifyEntry(date: startDate.addingTimeInterval(offset), snapshot: projectedSnapshot, lyrics: lyrics)
