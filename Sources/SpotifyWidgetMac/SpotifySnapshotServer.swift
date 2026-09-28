@@ -44,7 +44,7 @@ final class SpotifySnapshotServer: @unchecked Sendable {
     static let port: UInt16 = 47391
     private static let widgetKind = "SpotifyWidgetPlayer"
     private static let snapshotRefreshInterval: TimeInterval = 1
-    private static let timelineKeepAliveInterval: TimeInterval = 60
+    private static let timelineKeepAliveInterval: TimeInterval = 20
 
     private let queue = DispatchQueue(label: "com.leounib.Widgify.snapshot-server")
     private let lock = NSLock()
