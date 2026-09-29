@@ -11,6 +11,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         WidgifySnapshotServer.shared.start()
     }
 
+    func application(_ application: NSApplication, open urls: [URL]) {
+        for url in urls {
+            handleURL(url)
+        }
+    }
+
     @objc private func quit() {
         NSApp.terminate(nil)
     }
@@ -31,5 +37,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(.separator())
         menu.addItem(NSMenuItem(title: "Quit", action: #selector(quit), keyEquivalent: "q"))
         statusItem?.menu = menu
+    }
+
+    private func handleURL(_ url: URL) {
+        guard url.scheme == "widgify", url.host == "command" else { return }
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              let command = components.queryItems?.first(where: { $0.name == "command" })?.value else {
+            return
+        }
+
+        WidgifySnapshotServer.shared.performCommand(command)
     }
 }

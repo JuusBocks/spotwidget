@@ -67,6 +67,22 @@ final class WidgifySnapshotServer: @unchecked Sendable {
         }
     }
 
+    func performCommand(_ command: String) {
+        guard let script = Self.script(for: command) else {
+            NSLog("Widgify ignored unknown command: \(command)")
+            return
+        }
+
+        queue.async { [weak self] in
+            guard let self else { return }
+            _ = self.runAppleScript(script)
+            self.queue.asyncAfter(deadline: .now() + 0.25) { [weak self] in
+                _ = self?.refreshSnapshot()
+                self?.reloadWidgetTimelines()
+            }
+        }
+    }
+
     private func startSocket() {
         socketFD = socket(AF_INET, SOCK_STREAM, 0)
         guard socketFD >= 0 else {
@@ -187,17 +203,13 @@ final class WidgifySnapshotServer: @unchecked Sendable {
             return
         }
 
-        guard let script = Self.script(for: command) else {
+        guard Self.script(for: command) != nil else {
             sendStatus(to: client, code: 400, message: "Bad Request")
             return
         }
 
-        _ = runAppleScript(script)
+        performCommand(command)
         sendStatus(to: client, code: 200, message: "OK")
-        queue.asyncAfter(deadline: .now() + 0.25) { [weak self] in
-            _ = self?.refreshSnapshot()
-            self?.reloadWidgetTimelines()
-        }
     }
 
     private func commandValue(from firstLine: String) -> String? {
