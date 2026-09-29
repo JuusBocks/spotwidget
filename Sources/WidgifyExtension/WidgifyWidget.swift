@@ -781,11 +781,8 @@ private struct FullArtworkBackground: View {
     }
 
     private var artworkImage: NSImage? {
-        if let data = snapshot.artworkData, let image = NSImage(data: data) {
-            return image
-        }
-
-        return NSImage(named: "WidgifyArtwork")
+        guard let data = snapshot.artworkData else { return nil }
+        return NSImage(data: data)
     }
 }
 
@@ -831,11 +828,8 @@ private struct ArtworkView: View {
     }
 
     private var artworkImage: NSImage? {
-        if let data = snapshot.artworkData, let image = NSImage(data: data) {
-            return image
-        }
-
-        return NSImage(named: "WidgifyArtwork")
+        guard let data = snapshot.artworkData else { return nil }
+        return NSImage(data: data)
     }
 }
 
