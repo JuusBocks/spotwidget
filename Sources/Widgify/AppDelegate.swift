@@ -8,7 +8,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
         configureStatusItem()
-        SpotifySnapshotServer.shared.start()
+        WidgifySnapshotServer.shared.start()
     }
 
     @objc private func quit() {

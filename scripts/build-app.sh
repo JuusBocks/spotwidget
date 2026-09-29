@@ -7,7 +7,7 @@ CONTENTS_DIR="$APP_DIR/Contents"
 MACOS_DIR="$CONTENTS_DIR/MacOS"
 RESOURCES_DIR="$CONTENTS_DIR/Resources"
 PLUGINS_DIR="$CONTENTS_DIR/PlugIns"
-WIDGET_DIR="$PLUGINS_DIR/SpotifyWidgetExtension.appex"
+WIDGET_DIR="$PLUGINS_DIR/WidgifyExtension.appex"
 WIDGET_CONTENTS_DIR="$WIDGET_DIR/Contents"
 WIDGET_MACOS_DIR="$WIDGET_CONTENTS_DIR/MacOS"
 SDKROOT="${SDKROOT:-$(xcrun --sdk macosx --show-sdk-path)}"
@@ -21,25 +21,25 @@ swift build -c release -Xswiftc -sdk -Xswiftc "$SDKROOT"
 
 rm -rf "$APP_DIR"
 mkdir -p "$MACOS_DIR" "$RESOURCES_DIR" "$WIDGET_MACOS_DIR"
-cp ".build/release/SpotifyWidgetMac" "$MACOS_DIR/SpotifyWidgetMac"
+cp ".build/release/Widgify" "$MACOS_DIR/Widgify"
 cp "Resources/Info.plist" "$CONTENTS_DIR/Info.plist"
 
-cp ".build/release/SpotifyWidgetExtension" "$WIDGET_MACOS_DIR/SpotifyWidgetExtension"
+cp ".build/release/WidgifyExtension" "$WIDGET_MACOS_DIR/WidgifyExtension"
 cp "Resources/WidgetExtensionInfo.plist" "$WIDGET_CONTENTS_DIR/Info.plist"
 
-WIDGET_OBJECTS_DIR="$ROOT_DIR/.build/out/Intermediates.noindex/SpotifyWidgetMac.build/Release/SpotifyWidgetExtension-p.build/Objects-normal/arm64"
+WIDGET_OBJECTS_DIR="$ROOT_DIR/.build/out/Intermediates.noindex/Widgify.build/Release/WidgifyExtension-p.build/Objects-normal/arm64"
 METADATA_ROOT="$ROOT_DIR/.build/Metadata.appintents"
 SOURCE_LIST="$ROOT_DIR/.build/widget-sources.txt"
 CONST_VALUES_LIST="$ROOT_DIR/.build/widget-const-values.txt"
 
-printf '%s\n' "$ROOT_DIR"/Sources/SpotifyWidgetExtension/*.swift > "$SOURCE_LIST"
-printf '%s\n' "$WIDGET_OBJECTS_DIR/SpotifyWidgetExtension-primary.swiftconstvalues" > "$CONST_VALUES_LIST"
+printf '%s\n' "$ROOT_DIR"/Sources/WidgifyExtension/*.swift > "$SOURCE_LIST"
+printf '%s\n' "$WIDGET_OBJECTS_DIR/WidgifyExtension-primary.swiftconstvalues" > "$CONST_VALUES_LIST"
 rm -rf "$METADATA_ROOT"
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor \
   --output "$METADATA_ROOT" \
   --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain \
-  --module-name SpotifyWidgetExtension \
+  --module-name WidgifyExtension \
   --sdk-root "$SDKROOT" \
   --xcode-version 17C52 \
   --platform-family macOS \

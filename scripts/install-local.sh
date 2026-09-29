@@ -57,8 +57,8 @@ if [[ -z "${DEVELOPER_DIR:-}" && -d "/Applications/Xcode.app/Contents/Developer"
 fi
 
 XCODEBUILD_ARGS=(
-  -project "$ROOT_DIR/SpotifyWidgetMac.xcodeproj"
-  -scheme SpotifyWidgetMac
+  -project "$ROOT_DIR/Widgify.xcodeproj"
+  -scheme Widgify
   -configuration "$CONFIGURATION"
   -destination "platform=macOS"
   -derivedDataPath "$DERIVED_DATA_PATH"
@@ -75,7 +75,7 @@ xcodebuild "${XCODEBUILD_ARGS[@]}"
 
 BUILT_APP="$DERIVED_DATA_PATH/Build/Products/$CONFIGURATION/Widgify.app"
 INSTALL_APP="/Applications/Widgify.app"
-WIDGET_APP="$INSTALL_APP/Contents/PlugIns/SpotifyWidgetExtension.appex"
+WIDGET_APP="$INSTALL_APP/Contents/PlugIns/WidgifyExtension.appex"
 
 if [[ ! -d "$BUILT_APP" ]]; then
   echo "Build finished, but Widgify.app was not found at $BUILT_APP" >&2

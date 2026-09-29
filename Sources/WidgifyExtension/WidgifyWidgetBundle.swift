@@ -2,8 +2,8 @@ import WidgetKit
 import SwiftUI
 
 @main
-struct SpotifyWidgetBundle: WidgetBundle {
+struct WidgifyWidgetBundle: WidgetBundle {
     var body: some Widget {
-        SpotifyWidget()
+        WidgifyWidget()
     }
 }

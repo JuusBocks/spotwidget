@@ -16,8 +16,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A10000000000000000000021"
                BuildableName = "Widgify.app"
-               BlueprintName = "SpotifyWidgetMac"
-               ReferencedContainer = "container:SpotifyWidgetMac.xcodeproj">
+               BlueprintName = "Widgify"
+               ReferencedContainer = "container:Widgify.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -38,8 +38,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A10000000000000000000021"
             BuildableName = "Widgify.app"
-            BlueprintName = "SpotifyWidgetMac"
-            ReferencedContainer = "container:SpotifyWidgetMac.xcodeproj">
+            BlueprintName = "Widgify"
+            ReferencedContainer = "container:Widgify.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -55,8 +55,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A10000000000000000000021"
             BuildableName = "Widgify.app"
-            BlueprintName = "SpotifyWidgetMac"
-            ReferencedContainer = "container:SpotifyWidgetMac.xcodeproj">
+            BlueprintName = "Widgify"
+            ReferencedContainer = "container:Widgify.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

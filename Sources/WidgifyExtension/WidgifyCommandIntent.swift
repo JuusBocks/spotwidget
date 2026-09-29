@@ -1,7 +1,7 @@
 import AppIntents
 import WidgetKit
 
-enum SpotifyCommand: String, AppEnum {
+enum WidgifyCommand: String, AppEnum {
     case previous
     case play
     case pause
@@ -12,7 +12,7 @@ enum SpotifyCommand: String, AppEnum {
 
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Spotify Command")
 
-    static let caseDisplayRepresentations: [SpotifyCommand: DisplayRepresentation] = [
+    static let caseDisplayRepresentations: [WidgifyCommand: DisplayRepresentation] = [
         .previous: "Previous",
         .play: "Play",
         .pause: "Pause",
@@ -35,25 +35,25 @@ enum LyricsPageDirection: String, AppEnum {
     ]
 }
 
-struct SpotifyCommandIntent: AppIntent {
+struct WidgifyCommandIntent: AppIntent {
     static let title: LocalizedStringResource = "Control Spotify"
     static let description = IntentDescription("Controls playback in the local Spotify app.")
     static let openAppWhenRun = false
 
     @Parameter(title: "Command")
-    var command: SpotifyCommand
+    var command: WidgifyCommand
 
     init() {
         command = .playPause
     }
 
-    init(command: SpotifyCommand) {
+    init(command: WidgifyCommand) {
         self.command = command
     }
 
     func perform() async throws -> some IntentResult {
-        SpotifyReader.send(command)
-        WidgetCenter.shared.reloadTimelines(ofKind: SpotifyWidgetConstants.kind)
+        WidgifyReader.send(command)
+        WidgetCenter.shared.reloadTimelines(ofKind: WidgifyWidgetConstants.kind)
         return .result()
     }
 }
@@ -86,7 +86,7 @@ struct LyricsPageIntent: AppIntent {
 
     func perform() async throws -> some IntentResult {
         LyricsPageStore.move(trackKey: trackKey, direction: direction, maxPage: maxPage)
-        WidgetCenter.shared.reloadTimelines(ofKind: SpotifyWidgetConstants.kind)
+        WidgetCenter.shared.reloadTimelines(ofKind: WidgifyWidgetConstants.kind)
         return .result()
     }
 }

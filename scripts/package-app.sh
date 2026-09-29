@@ -79,7 +79,7 @@ if [[ "$VERSION" == *'$('* ]]; then
 fi
 
 if [[ -z "$VERSION" ]]; then
-  VERSION="$(awk -F' = ' '/MARKETING_VERSION/ { gsub(/;/, "", $2); print $2; exit }' "$ROOT_DIR/SpotifyWidgetMac.xcodeproj/project.pbxproj")"
+  VERSION="$(awk -F' = ' '/MARKETING_VERSION/ { gsub(/;/, "", $2); print $2; exit }' "$ROOT_DIR/Widgify.xcodeproj/project.pbxproj")"
 fi
 
 if [[ -z "$VERSION" ]]; then
@@ -87,8 +87,8 @@ if [[ -z "$VERSION" ]]; then
 fi
 
 XCODEBUILD_ARGS=(
-  -project "$ROOT_DIR/SpotifyWidgetMac.xcodeproj"
-  -scheme SpotifyWidgetMac
+  -project "$ROOT_DIR/Widgify.xcodeproj"
+  -scheme Widgify
   -configuration "$CONFIGURATION"
   -destination "platform=macOS"
   -derivedDataPath "$DERIVED_DATA_PATH"

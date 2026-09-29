@@ -2,7 +2,7 @@ import SwiftUI
 
 @MainActor
 @main
-struct SpotifyWidgetApp: App {
+struct WidgifyApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {

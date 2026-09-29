@@ -23,20 +23,20 @@ The project includes:
 
 Use the Xcode project when you want the widget to appear in macOS's desktop widget picker.
 
-1. Open `SpotifyWidgetMac.xcodeproj` in Xcode.
-2. Select the `SpotifyWidgetMac` project in the navigator.
-3. Select the `SpotifyWidgetMac` target, then `Signing & Capabilities`.
+1. Open `Widgify.xcodeproj` in Xcode.
+2. Select the `Widgify` project in the navigator.
+3. Select the `Widgify` target, then `Signing & Capabilities`.
 4. Enable `Automatically manage signing`.
 5. Choose your Apple ID or Personal Team.
-6. Repeat steps 3-5 for the `SpotifyWidgetExtension` target.
-7. Build and run the `SpotifyWidgetMac` scheme.
+6. Repeat steps 3-5 for the `WidgifyExtension` target.
+7. Build and run the `Widgify` scheme.
 8. Open the desktop widget picker and search for `Widgify`.
 
 Default bundle identifiers:
 
 ```text
 com.leounib.Widgify
-com.leounib.Widgify.SpotifyWidgetExtension
+com.leounib.Widgify.WidgifyExtension
 ```
 
 If Xcode says a bundle identifier is unavailable, change `leounib` to something unique in both targets.
@@ -64,7 +64,7 @@ For a dedicated second-Mac checklist, see [INSTALL.md](INSTALL.md).
 After a successful Xcode build, copy the app into `/Applications` and launch it:
 
 ```bash
-cp -R "$HOME/Library/Developer/Xcode/DerivedData/SpotifyWidgetMac-"*/Build/Products/Debug/"Widgify.app" /Applications/
+cp -R "$HOME/Library/Developer/Xcode/DerivedData/Widgify-"*/Build/Products/Debug/"Widgify.app" /Applications/
 open "/Applications/Widgify.app"
 ```
 
@@ -72,8 +72,8 @@ For a deterministic command-line build that keeps output inside this repository,
 
 ```bash
 xcodebuild \
-  -project SpotifyWidgetMac.xcodeproj \
-  -scheme SpotifyWidgetMac \
+  -project Widgify.xcodeproj \
+  -scheme Widgify \
   -configuration Debug \
   -destination 'platform=macOS' \
   -derivedDataPath build/DerivedData \

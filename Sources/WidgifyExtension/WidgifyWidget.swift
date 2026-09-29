@@ -2,38 +2,38 @@ import AppKit
 import SwiftUI
 import WidgetKit
 
-struct SpotifyEntry: TimelineEntry {
+struct WidgifyEntry: TimelineEntry {
     let date: Date
-    let snapshot: SpotifySnapshot
-    let lyrics: SpotifyLyrics
+    let snapshot: WidgifySnapshot
+    let lyrics: WidgifyLyrics
 }
 
-struct SpotifyProvider: TimelineProvider {
+struct WidgifyProvider: TimelineProvider {
     private static let playingTimelineStep: TimeInterval = 1
     private static let minimumPlayingTimelineHorizon: TimeInterval = 90
     private static let maximumPlayingTimelineHorizon: TimeInterval = 300
 
-    func placeholder(in context: Context) -> SpotifyEntry {
-        SpotifyEntry(date: Date(), snapshot: .idle, lyrics: .idle)
+    func placeholder(in context: Context) -> WidgifyEntry {
+        WidgifyEntry(date: Date(), snapshot: .idle, lyrics: .idle)
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (SpotifyEntry) -> Void) {
-        let snapshot = SpotifyReader.currentSnapshot(loadArtwork: !context.isPreview)
-        completion(SpotifyEntry(date: Date(), snapshot: snapshot, lyrics: LyricsReader.lyrics(for: snapshot)))
+    func getSnapshot(in context: Context, completion: @escaping (WidgifyEntry) -> Void) {
+        let snapshot = WidgifyReader.currentSnapshot(loadArtwork: !context.isPreview)
+        completion(WidgifyEntry(date: Date(), snapshot: snapshot, lyrics: LyricsReader.lyrics(for: snapshot)))
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<SpotifyEntry>) -> Void) {
+    func getTimeline(in context: Context, completion: @escaping (Timeline<WidgifyEntry>) -> Void) {
         let now = Date()
-        let snapshot = SpotifyReader.currentSnapshot(loadArtwork: !context.isPreview)
+        let snapshot = WidgifyReader.currentSnapshot(loadArtwork: !context.isPreview)
         let lyrics = LyricsReader.lyrics(for: snapshot)
         let entries = timelineEntries(from: snapshot, lyrics: lyrics, startingAt: now)
         let refresh = entries.last?.date.addingTimeInterval(snapshot.isPlaying ? 2 : 60) ?? now.addingTimeInterval(60)
         completion(Timeline(entries: entries, policy: .after(refresh)))
     }
 
-    private func timelineEntries(from snapshot: SpotifySnapshot, lyrics: SpotifyLyrics, startingAt startDate: Date) -> [SpotifyEntry] {
+    private func timelineEntries(from snapshot: WidgifySnapshot, lyrics: WidgifyLyrics, startingAt startDate: Date) -> [WidgifyEntry] {
         guard snapshot.isPlaying, snapshot.duration > 0 else {
-            return [SpotifyEntry(date: startDate, snapshot: snapshot, lyrics: lyrics)]
+            return [WidgifyEntry(date: startDate, snapshot: snapshot, lyrics: lyrics)]
         }
 
         let remaining = max(0, snapshot.duration - snapshot.position)
@@ -44,17 +44,17 @@ struct SpotifyProvider: TimelineProvider {
         return stride(from: 0, through: horizon, by: Self.playingTimelineStep).map { offset in
             var projectedSnapshot = snapshot
             projectedSnapshot.position = min(snapshot.duration, snapshot.position + offset)
-            return SpotifyEntry(date: startDate.addingTimeInterval(offset), snapshot: projectedSnapshot, lyrics: lyrics)
+            return WidgifyEntry(date: startDate.addingTimeInterval(offset), snapshot: projectedSnapshot, lyrics: lyrics)
         }
     }
 }
 
-struct SpotifyWidget: Widget {
-    static let kind = SpotifyWidgetConstants.kind
+struct WidgifyWidget: Widget {
+    static let kind = WidgifyWidgetConstants.kind
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: Self.kind, provider: SpotifyProvider()) { entry in
-            SpotifyWidgetEntryView(entry: entry)
+        StaticConfiguration(kind: Self.kind, provider: WidgifyProvider()) { entry in
+            WidgifyWidgetEntryView(entry: entry)
                 .containerBackground(.black, for: .widget)
         }
         .configurationDisplayName("Widgify")
@@ -65,10 +65,10 @@ struct SpotifyWidget: Widget {
     }
 }
 
-struct SpotifyWidgetEntryView: View {
+struct WidgifyWidgetEntryView: View {
     @Environment(\.widgetFamily) private var family
     @Environment(\.widgetRenderingMode) private var renderingMode
-    let entry: SpotifyEntry
+    let entry: WidgifyEntry
 
     var body: some View {
         Group {
@@ -76,7 +76,7 @@ struct SpotifyWidgetEntryView: View {
             case .fullColor:
                 fullColorBody
             default:
-                AmbientSpotifyWidget(snapshot: entry.snapshot)
+                AmbientWidgifyWidget(snapshot: entry.snapshot)
             }
         }
         .transaction { transaction in
@@ -88,37 +88,37 @@ struct SpotifyWidgetEntryView: View {
     private var fullColorBody: some View {
         switch family {
         case .systemSmall:
-            SmallSpotifyWidget(snapshot: entry.snapshot)
+            SmallWidgifyWidget(snapshot: entry.snapshot)
         case .systemMedium:
-            MediumSpotifyWidget(snapshot: entry.snapshot)
+            MediumWidgifyWidget(snapshot: entry.snapshot)
         case .systemExtraLarge:
-            ExtraLargeSpotifyWidget(snapshot: entry.snapshot, lyrics: entry.lyrics)
+            ExtraLargeWidgifyWidget(snapshot: entry.snapshot, lyrics: entry.lyrics)
         default:
-            LargeSpotifyWidget(snapshot: entry.snapshot, lyrics: entry.lyrics)
+            LargeWidgifyWidget(snapshot: entry.snapshot, lyrics: entry.lyrics)
         }
     }
 }
 
-private struct AmbientSpotifyWidget: View {
+private struct AmbientWidgifyWidget: View {
     @Environment(\.widgetFamily) private var family
-    let snapshot: SpotifySnapshot
+    let snapshot: WidgifySnapshot
 
     var body: some View {
         let ambientSnapshot = snapshot.roundedForAmbientDisplay(interval: 5)
 
         switch family {
         case .systemSmall:
-            SmallAmbientSpotifyWidget(snapshot: ambientSnapshot)
+            SmallAmbientWidgifyWidget(snapshot: ambientSnapshot)
         case .systemMedium:
-            MediumAmbientSpotifyWidget(snapshot: ambientSnapshot)
+            MediumAmbientWidgifyWidget(snapshot: ambientSnapshot)
         default:
-            WideAmbientSpotifyWidget(snapshot: ambientSnapshot)
+            WideAmbientWidgifyWidget(snapshot: ambientSnapshot)
         }
     }
 }
 
-private struct SmallAmbientSpotifyWidget: View {
-    let snapshot: SpotifySnapshot
+private struct SmallAmbientWidgifyWidget: View {
+    let snapshot: WidgifySnapshot
 
     var body: some View {
         GeometryReader { proxy in
@@ -147,8 +147,8 @@ private struct SmallAmbientSpotifyWidget: View {
     }
 }
 
-private struct MediumAmbientSpotifyWidget: View {
-    let snapshot: SpotifySnapshot
+private struct MediumAmbientWidgifyWidget: View {
+    let snapshot: WidgifySnapshot
 
     var body: some View {
         GeometryReader { proxy in
@@ -177,8 +177,8 @@ private struct MediumAmbientSpotifyWidget: View {
     }
 }
 
-private struct WideAmbientSpotifyWidget: View {
-    let snapshot: SpotifySnapshot
+private struct WideAmbientWidgifyWidget: View {
+    let snapshot: WidgifySnapshot
 
     var body: some View {
         GeometryReader { proxy in
@@ -207,8 +207,8 @@ private struct WideAmbientSpotifyWidget: View {
     }
 }
 
-private struct SmallSpotifyWidget: View {
-    let snapshot: SpotifySnapshot
+private struct SmallWidgifyWidget: View {
+    let snapshot: WidgifySnapshot
 
     var body: some View {
         GeometryReader { proxy in
@@ -264,8 +264,8 @@ private struct SmallSpotifyWidget: View {
     }
 }
 
-private struct MediumSpotifyWidget: View {
-    let snapshot: SpotifySnapshot
+private struct MediumWidgifyWidget: View {
+    let snapshot: WidgifySnapshot
 
     var body: some View {
         GeometryReader { proxy in
@@ -308,9 +308,9 @@ private struct MediumSpotifyWidget: View {
     }
 }
 
-private struct LargeSpotifyWidget: View {
-    let snapshot: SpotifySnapshot
-    let lyrics: SpotifyLyrics
+private struct LargeWidgifyWidget: View {
+    let snapshot: WidgifySnapshot
+    let lyrics: WidgifyLyrics
 
     var body: some View {
         GeometryReader { proxy in
@@ -360,9 +360,9 @@ private struct LargeSpotifyWidget: View {
     }
 }
 
-private struct ExtraLargeSpotifyWidget: View {
-    let snapshot: SpotifySnapshot
-    let lyrics: SpotifyLyrics
+private struct ExtraLargeWidgifyWidget: View {
+    let snapshot: WidgifySnapshot
+    let lyrics: WidgifyLyrics
 
     var body: some View {
         GeometryReader { proxy in
@@ -420,7 +420,7 @@ private struct ExtraLargeSpotifyWidget: View {
 }
 
 private struct TrackSummary: View {
-    let snapshot: SpotifySnapshot
+    let snapshot: WidgifySnapshot
     var titleFont: Font
     var artistFont: Font = .headline.weight(.semibold)
     var albumFont: Font = .caption
@@ -448,7 +448,7 @@ private struct TrackSummary: View {
 }
 
 private struct CompactTrackSummary: View {
-    let snapshot: SpotifySnapshot
+    let snapshot: WidgifySnapshot
 
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
@@ -473,8 +473,8 @@ private struct CompactTrackSummary: View {
 }
 
 private struct LyricsPanel: View {
-    let snapshot: SpotifySnapshot
-    let lyrics: SpotifyLyrics
+    let snapshot: WidgifySnapshot
+    let lyrics: WidgifyLyrics
     var visibleLineLimit = 3
     var currentLineLimit = 2
     var prominentCurrentLine = false
@@ -609,7 +609,7 @@ private struct LyricsPanel: View {
         showsPlainLyricsPaging && lyrics.hasLyrics && !lyrics.isSynced && maxPlainLyricsPage > 0
     }
 
-    private var visibleLines: [SpotifyLyrics.Line] {
+    private var visibleLines: [WidgifyLyrics.Line] {
         guard lyrics.hasLyrics else { return [] }
         guard !lyrics.isSynced else {
             return lyrics.visibleLines(at: snapshot.position, limit: visibleLineLimit)
@@ -626,20 +626,20 @@ private struct LyricsPanel: View {
         return isCurrent ? currentLineLimit : 1
     }
 
-    private func isFeaturedLine(_ line: SpotifyLyrics.Line) -> Bool {
+    private func isFeaturedLine(_ line: WidgifyLyrics.Line) -> Bool {
         guard lyrics.isSynced else {
             return visibleLines.first == line
         }
         return lyrics.isCurrent(line, at: snapshot.position)
     }
 
-    private func opacity(for line: SpotifyLyrics.Line, isFeatured: Bool) -> Double {
+    private func opacity(for line: WidgifyLyrics.Line, isFeatured: Bool) -> Double {
         guard !isFeatured else { return 0.98 }
         guard lyrics.isSynced, let time = line.time else { return 0.58 }
         return time > snapshot.position ? 0.58 : 0.34
     }
 
-    private func blurRadius(for line: SpotifyLyrics.Line, isFeatured: Bool) -> CGFloat {
+    private func blurRadius(for line: WidgifyLyrics.Line, isFeatured: Bool) -> CGFloat {
         guard !isFeatured else { return 0 }
         guard lyrics.isSynced, let time = line.time else { return 0.25 }
         return time > snapshot.position ? 0.25 : 0.75
@@ -751,7 +751,7 @@ private struct LyricsPageButton: View {
 }
 
 private struct FullArtworkBackground: View {
-    let snapshot: SpotifySnapshot
+    let snapshot: WidgifySnapshot
 
     var body: some View {
         ZStack {
@@ -787,7 +787,7 @@ private struct FullArtworkBackground: View {
 }
 
 private struct ArtworkBackdrop: View {
-    let snapshot: SpotifySnapshot
+    let snapshot: WidgifySnapshot
 
     var body: some View {
         if let artworkImage {
@@ -808,7 +808,7 @@ private struct ArtworkBackdrop: View {
 }
 
 private struct ArtworkView: View {
-    let snapshot: SpotifySnapshot
+    let snapshot: WidgifySnapshot
     let cornerRadius: CGFloat
 
     var body: some View {
@@ -851,7 +851,7 @@ private struct FullColorArtworkImage: View {
 }
 
 private struct ProgressRow: View {
-    let snapshot: SpotifySnapshot
+    let snapshot: WidgifySnapshot
 
     var body: some View {
         VStack(spacing: 4) {
@@ -883,7 +883,7 @@ private struct ProgressRow: View {
 }
 
 private struct CompactProgressRow: View {
-    let snapshot: SpotifySnapshot
+    let snapshot: WidgifySnapshot
     var showsTime = false
 
     var body: some View {
@@ -913,7 +913,7 @@ private struct CompactProgressRow: View {
 }
 
 private struct MiniProgressBar: View {
-    let snapshot: SpotifySnapshot
+    let snapshot: WidgifySnapshot
 
     var body: some View {
         Capsule()
@@ -942,7 +942,7 @@ private struct MiniProgressBar: View {
 }
 
 private struct PlaybackControlStrip: View {
-    let snapshot: SpotifySnapshot
+    let snapshot: WidgifySnapshot
 
     var body: some View {
         ZStack {
@@ -968,7 +968,7 @@ private struct PrimaryPlaybackButton: View {
     let isPlaying: Bool
 
     var body: some View {
-        Button(intent: SpotifyCommandIntent(command: isPlaying ? .pause : .play)) {
+        Button(intent: WidgifyCommandIntent(command: isPlaying ? .pause : .play)) {
             Image(systemName: isPlaying ? "pause.fill" : "play.fill")
                 .imageScale(.small)
                 .fontWeight(.black)
@@ -989,12 +989,12 @@ private struct ControlButton: View {
     @Environment(\.widgetRenderingMode) private var renderingMode
 
     let systemName: String
-    let command: SpotifyCommand
+    let command: WidgifyCommand
     var isActive = false
     var inactiveOpacity = 0.94
 
     var body: some View {
-        Button(intent: SpotifyCommandIntent(command: command)) {
+        Button(intent: WidgifyCommandIntent(command: command)) {
             ZStack {
                 controlImage
 
@@ -1029,8 +1029,8 @@ private func formatTime(_ seconds: TimeInterval) -> String {
     return "\(total / 60):\(String(format: "%02d", total % 60))"
 }
 
-private extension SpotifySnapshot {
-    func roundedForAmbientDisplay(interval: TimeInterval) -> SpotifySnapshot {
+private extension WidgifySnapshot {
+    func roundedForAmbientDisplay(interval: TimeInterval) -> WidgifySnapshot {
         guard interval > 0, duration > 0 else { return self }
 
         var snapshot = self

@@ -1,6 +1,6 @@
 import Foundation
 
-struct SpotifySnapshot: Equatable {
+struct WidgifySnapshot: Equatable {
     var title: String
     var artist: String
     var album: String
@@ -12,7 +12,7 @@ struct SpotifySnapshot: Equatable {
     var isShuffling: Bool
     var status: String
 
-    static let idle = SpotifySnapshot(
+    static let idle = WidgifySnapshot(
         title: "Spotify",
         artist: "Start playback",
         album: "",
@@ -26,7 +26,7 @@ struct SpotifySnapshot: Equatable {
     )
 }
 
-struct SpotifyLyrics: Equatable {
+struct WidgifyLyrics: Equatable {
     struct Line: Equatable {
         var time: TimeInterval?
         var text: String
@@ -36,7 +36,7 @@ struct SpotifyLyrics: Equatable {
     var lines: [Line]
     var isSynced: Bool
 
-    static let idle = SpotifyLyrics(status: "Lyrics", lines: [], isSynced: false)
+    static let idle = WidgifyLyrics(status: "Lyrics", lines: [], isSynced: false)
 
     var hasLyrics: Bool {
         !lines.isEmpty
@@ -70,7 +70,7 @@ struct SpotifyLyrics: Equatable {
 enum LyricsPageStore {
     private static let cache = LyricsPageCache()
 
-    static func key(for snapshot: SpotifySnapshot) -> String {
+    static func key(for snapshot: WidgifySnapshot) -> String {
         [
             snapshot.title.lowercased(),
             snapshot.artist.lowercased(),
@@ -96,8 +96,8 @@ enum LyricsPageStore {
     }
 }
 
-enum SpotifyReader {
-    static func currentSnapshot(loadArtwork: Bool = true) -> SpotifySnapshot {
+enum WidgifyReader {
+    static func currentSnapshot(loadArtwork: Bool = true) -> WidgifySnapshot {
         if let bridgedSnapshot = currentSnapshotFromHostApp(loadArtwork: loadArtwork) {
             return bridgedSnapshot
         }
@@ -106,14 +106,14 @@ enum SpotifyReader {
         let parts = output.components(separatedBy: "\n")
 
         guard parts.first != "NOT_RUNNING" else {
-            var snapshot = SpotifySnapshot.idle
+            var snapshot = WidgifySnapshot.idle
             snapshot.artist = "Open Spotify"
             snapshot.status = "Spotify is closed"
             return snapshot
         }
 
         guard parts.first != "NO_TRACK", parts.count >= 8 else {
-            return SpotifySnapshot.idle
+            return WidgifySnapshot.idle
         }
 
         let artworkURL = URL(string: parts[3])
@@ -122,7 +122,7 @@ enum SpotifyReader {
             artworkData = remoteData(from: artworkURL, timeout: 1.2)
         }
 
-        return SpotifySnapshot(
+        return WidgifySnapshot(
             title: parts[0].isEmpty ? "Unknown track" : parts[0],
             artist: parts[1].isEmpty ? "Unknown artist" : parts[1],
             album: parts[2],
@@ -148,7 +148,7 @@ enum SpotifyReader {
         var status: String
     }
 
-    private static func currentSnapshotFromHostApp(loadArtwork: Bool) -> SpotifySnapshot? {
+    private static func currentSnapshotFromHostApp(loadArtwork: Bool) -> WidgifySnapshot? {
         guard let url = URL(string: "http://127.0.0.1:47391/snapshot") else { return nil }
 
         var request = URLRequest(url: url)
@@ -166,7 +166,7 @@ enum SpotifyReader {
             artworkData = remoteData(from: artworkURL, timeout: 1.2)
         }
 
-        return SpotifySnapshot(
+        return WidgifySnapshot(
             title: hosted.title,
             artist: hosted.artist,
             album: hosted.album,
@@ -180,7 +180,7 @@ enum SpotifyReader {
         )
     }
 
-    static func send(_ command: SpotifyCommand) {
+    static func send(_ command: WidgifyCommand) {
         if sendToHostApp(command) {
             return
         }
@@ -222,7 +222,7 @@ enum SpotifyReader {
         """)
     }
 
-    private static func sendToHostApp(_ command: SpotifyCommand) -> Bool {
+    private static func sendToHostApp(_ command: WidgifyCommand) -> Bool {
         guard var components = URLComponents(string: "http://127.0.0.1:47391/command") else {
             return false
         }
@@ -302,9 +302,9 @@ enum LyricsReader {
 
     private static let cache = LyricsCache()
 
-    static func lyrics(for snapshot: SpotifySnapshot) -> SpotifyLyrics {
-        guard snapshot.title != SpotifySnapshot.idle.title,
-              snapshot.artist != SpotifySnapshot.idle.artist,
+    static func lyrics(for snapshot: WidgifySnapshot) -> WidgifyLyrics {
+        guard snapshot.title != WidgifySnapshot.idle.title,
+              snapshot.artist != WidgifySnapshot.idle.artist,
               snapshot.duration > 0 else {
             return .idle
         }
@@ -319,9 +319,9 @@ enum LyricsReader {
         return lyrics
     }
 
-    private static func fetchLyrics(for snapshot: SpotifySnapshot) -> SpotifyLyrics {
+    private static func fetchLyrics(for snapshot: WidgifySnapshot) -> WidgifyLyrics {
         guard var components = URLComponents(string: "https://lrclib.net/api/get") else {
-            return SpotifyLyrics(status: "Lyrics unavailable", lines: [], isSynced: false)
+            return WidgifyLyrics(status: "Lyrics unavailable", lines: [], isSynced: false)
         }
 
         components.queryItems = [
@@ -332,7 +332,7 @@ enum LyricsReader {
         ]
 
         guard let url = components.url else {
-            return SpotifyLyrics(status: "Lyrics unavailable", lines: [], isSynced: false)
+            return WidgifyLyrics(status: "Lyrics unavailable", lines: [], isSynced: false)
         }
 
         var request = URLRequest(url: url)
@@ -344,11 +344,11 @@ enum LyricsReader {
               let httpResponse = response as? HTTPURLResponse,
               httpResponse.statusCode == 200,
               let record = try? JSONDecoder().decode(LRCLIBRecord.self, from: data) else {
-            return SpotifyLyrics(status: "No lyrics found", lines: [], isSynced: false)
+            return WidgifyLyrics(status: "No lyrics found", lines: [], isSynced: false)
         }
 
         if record.instrumental {
-            return SpotifyLyrics(status: "Instrumental", lines: [], isSynced: false)
+            return WidgifyLyrics(status: "Instrumental", lines: [], isSynced: false)
         }
 
         if let syncedLyrics = record.syncedLyrics,
@@ -362,34 +362,34 @@ enum LyricsReader {
                 .components(separatedBy: .newlines)
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
                 .filter { !$0.isEmpty }
-                .map { SpotifyLyrics.Line(time: nil, text: $0) }
+                .map { WidgifyLyrics.Line(time: nil, text: $0) }
 
             if !lines.isEmpty {
-                return SpotifyLyrics(status: "Lyrics", lines: lines, isSynced: false)
+                return WidgifyLyrics(status: "Lyrics", lines: lines, isSynced: false)
             }
         }
 
-        return SpotifyLyrics(status: "No lyrics found", lines: [], isSynced: false)
+        return WidgifyLyrics(status: "No lyrics found", lines: [], isSynced: false)
     }
 
-    private static func parseSyncedLyrics(_ source: String) -> SpotifyLyrics? {
+    private static func parseSyncedLyrics(_ source: String) -> WidgifyLyrics? {
         let lines = source
             .components(separatedBy: .newlines)
             .compactMap(parseSyncedLine)
             .filter { !$0.text.isEmpty }
 
         guard !lines.isEmpty else { return nil }
-        return SpotifyLyrics(status: "Synced lyrics", lines: lines, isSynced: true)
+        return WidgifyLyrics(status: "Synced lyrics", lines: lines, isSynced: true)
     }
 
-    private static func parseSyncedLine(_ source: String) -> SpotifyLyrics.Line? {
+    private static func parseSyncedLine(_ source: String) -> WidgifyLyrics.Line? {
         guard let close = source.firstIndex(of: "]") else { return nil }
         let timeToken = source[source.index(after: source.startIndex)..<close]
         let text = source[source.index(after: close)...]
             .trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard let time = parseTime(String(timeToken)) else { return nil }
-        return SpotifyLyrics.Line(time: time, text: text)
+        return WidgifyLyrics.Line(time: time, text: text)
     }
 
     private static func parseTime(_ source: String) -> TimeInterval? {
@@ -402,7 +402,7 @@ enum LyricsReader {
         return minutes * 60 + seconds
     }
 
-    private static func cacheKey(for snapshot: SpotifySnapshot) -> String {
+    private static func cacheKey(for snapshot: WidgifySnapshot) -> String {
         [
             snapshot.title.lowercased(),
             snapshot.artist.lowercased(),
@@ -411,11 +411,11 @@ enum LyricsReader {
         ].joined(separator: "|")
     }
 
-    private static func cachedLyrics(for key: String) -> SpotifyLyrics? {
+    private static func cachedLyrics(for key: String) -> WidgifyLyrics? {
         cache.value(for: key)
     }
 
-    private static func store(_ lyrics: SpotifyLyrics, for key: String) {
+    private static func store(_ lyrics: WidgifyLyrics, for key: String) {
         cache.store(lyrics, for: key)
     }
 }
@@ -439,15 +439,15 @@ private final class LyricsPageCache: @unchecked Sendable {
 
 private final class LyricsCache: @unchecked Sendable {
     private let lock = NSLock()
-    private var values: [String: SpotifyLyrics] = [:]
+    private var values: [String: WidgifyLyrics] = [:]
 
-    func value(for key: String) -> SpotifyLyrics? {
+    func value(for key: String) -> WidgifyLyrics? {
         lock.lock()
         defer { lock.unlock() }
         return values[key]
     }
 
-    func store(_ lyrics: SpotifyLyrics, for key: String) {
+    func store(_ lyrics: WidgifyLyrics, for key: String) {
         lock.lock()
         values[key] = lyrics
         lock.unlock()

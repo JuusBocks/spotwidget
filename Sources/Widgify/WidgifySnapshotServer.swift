@@ -2,7 +2,7 @@ import Foundation
 import Darwin
 import WidgetKit
 
-private struct ServedSpotifySnapshot: Encodable {
+private struct ServedWidgifySnapshot: Encodable {
     var title: String
     var artist: String
     var album: String
@@ -14,7 +14,7 @@ private struct ServedSpotifySnapshot: Encodable {
     var status: String
     var updatedAt: Date
 
-    static let idle = ServedSpotifySnapshot(
+    static let idle = ServedWidgifySnapshot(
         title: "Spotify",
         artist: "Start playback",
         album: "",
@@ -27,7 +27,7 @@ private struct ServedSpotifySnapshot: Encodable {
         updatedAt: Date()
     )
 
-    func requiresTimelineReload(comparedTo other: ServedSpotifySnapshot) -> Bool {
+    func requiresTimelineReload(comparedTo other: ServedWidgifySnapshot) -> Bool {
         title != other.title ||
             artist != other.artist ||
             album != other.album ||
@@ -39,16 +39,16 @@ private struct ServedSpotifySnapshot: Encodable {
     }
 }
 
-final class SpotifySnapshotServer: @unchecked Sendable {
-    static let shared = SpotifySnapshotServer()
+final class WidgifySnapshotServer: @unchecked Sendable {
+    static let shared = WidgifySnapshotServer()
     static let port: UInt16 = 47391
-    private static let widgetKind = "SpotifyWidgetPlayer"
+    private static let widgetKind = "WidgifyWidgetPlayer"
     private static let snapshotRefreshInterval: TimeInterval = 1
     private static let timelineKeepAliveInterval: TimeInterval = 20
 
     private let queue = DispatchQueue(label: "com.leounib.Widgify.snapshot-server")
     private let lock = NSLock()
-    private var latestSnapshot = ServedSpotifySnapshot.idle
+    private var latestSnapshot = ServedWidgifySnapshot.idle
     private var socketFD: Int32 = -1
     private var socketSource: DispatchSourceRead?
     private var refreshTimer: DispatchSourceTimer?
@@ -224,13 +224,13 @@ final class SpotifySnapshotServer: @unchecked Sendable {
         return components.queryItems?.first(where: { $0.name == "command" })?.value
     }
 
-    private func cachedSnapshot() -> ServedSpotifySnapshot {
+    private func cachedSnapshot() -> ServedWidgifySnapshot {
         lock.lock()
         defer { lock.unlock() }
         return latestSnapshot
     }
 
-    private func updateSnapshot(_ snapshot: ServedSpotifySnapshot) -> Bool {
+    private func updateSnapshot(_ snapshot: ServedWidgifySnapshot) -> Bool {
         lock.lock()
         let previous = latestSnapshot
         latestSnapshot = snapshot
@@ -243,7 +243,7 @@ final class SpotifySnapshotServer: @unchecked Sendable {
         let parts = output.components(separatedBy: "\n")
 
         guard parts.first != "NOT_RUNNING" else {
-            var snapshot = ServedSpotifySnapshot.idle
+            var snapshot = ServedWidgifySnapshot.idle
             snapshot.artist = "Open Spotify"
             snapshot.status = "Spotify is closed"
             snapshot.updatedAt = Date()
@@ -251,13 +251,13 @@ final class SpotifySnapshotServer: @unchecked Sendable {
         }
 
         guard parts.first != "NO_TRACK", parts.count >= 8 else {
-            var snapshot = ServedSpotifySnapshot.idle
+            var snapshot = ServedWidgifySnapshot.idle
             snapshot.updatedAt = Date()
             return updateSnapshot(snapshot)
         }
 
         let playState = parts[4]
-        let snapshot = ServedSpotifySnapshot(
+        let snapshot = ServedWidgifySnapshot(
             title: parts[0].isEmpty ? "Unknown track" : parts[0],
             artist: parts[1].isEmpty ? "Unknown artist" : parts[1],
             album: parts[2],

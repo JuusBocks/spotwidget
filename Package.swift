@@ -8,17 +8,17 @@ let package = Package(
         .macOS(.v14)
     ],
     products: [
-        .executable(name: "Widgify", targets: ["SpotifyWidgetMac"]),
-        .executable(name: "SpotifyWidgetExtension", targets: ["SpotifyWidgetExtension"])
+        .executable(name: "Widgify", targets: ["Widgify"]),
+        .executable(name: "WidgifyExtension", targets: ["WidgifyExtension"])
     ],
     targets: [
         .executableTarget(
-            name: "SpotifyWidgetMac",
-            path: "Sources/SpotifyWidgetMac"
+            name: "Widgify",
+            path: "Sources/Widgify"
         ),
         .executableTarget(
-            name: "SpotifyWidgetExtension",
-            path: "Sources/SpotifyWidgetExtension",
+            name: "WidgifyExtension",
+            path: "Sources/WidgifyExtension",
             swiftSettings: [
                 .unsafeFlags(["-application-extension"])
             ]
