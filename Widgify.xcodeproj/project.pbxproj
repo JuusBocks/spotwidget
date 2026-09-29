@@ -16,6 +16,9 @@
 		A10000000000000000000009 /* WidgifyWidgetConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000019 /* WidgifyWidgetConstants.swift */; };
 		A1000000000000000000000A /* WidgifyExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001B /* WidgifyExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A1000000000000000000000E /* WidgifySnapshotServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001F /* WidgifySnapshotServer.swift */; };
+		A10000000000000000000023 /* WidgifySnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000015 /* WidgifySnapshot.swift */; };
+		A10000000000000000000024 /* WidgifyCommandIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000016 /* WidgifyCommandIntent.swift */; };
+		A10000000000000000000025 /* WidgifyWidgetConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000019 /* WidgifyWidgetConstants.swift */; };
 		A20000000000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* Assets.xcassets */; };
 		A20000000000000000000002 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
@@ -241,10 +244,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A10000000000000000000001 /* WidgifyApp.swift in Sources */,
-				A10000000000000000000002 /* AppDelegate.swift in Sources */,
-				A1000000000000000000000E /* WidgifySnapshotServer.swift in Sources */,
-			);
+					A10000000000000000000001 /* WidgifyApp.swift in Sources */,
+					A10000000000000000000002 /* AppDelegate.swift in Sources */,
+					A1000000000000000000000E /* WidgifySnapshotServer.swift in Sources */,
+					A10000000000000000000023 /* WidgifySnapshot.swift in Sources */,
+					A10000000000000000000024 /* WidgifyCommandIntent.swift in Sources */,
+					A10000000000000000000025 /* WidgifyWidgetConstants.swift in Sources */,
+				);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A10000000000000000000051 /* Sources */ = {
@@ -278,7 +284,7 @@
 				CODE_SIGN_ENTITLEMENTS = Resources/App.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 42;
+				CURRENT_PROJECT_VERSION = 43;
 				DEVELOPMENT_TEAM = LFE85M5TCV;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_DEBUG_DYLIB = NO;
@@ -305,7 +311,7 @@
 				CODE_SIGN_ENTITLEMENTS = Resources/App.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 42;
+				CURRENT_PROJECT_VERSION = 43;
 				DEVELOPMENT_TEAM = LFE85M5TCV;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_DEBUG_DYLIB = NO;
@@ -332,7 +338,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Resources/WidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 42;
+				CURRENT_PROJECT_VERSION = 43;
 				DEVELOPMENT_TEAM = LFE85M5TCV;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_DEBUG_DYLIB = NO;
@@ -360,7 +366,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Resources/WidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 42;
+				CURRENT_PROJECT_VERSION = 43;
 				DEVELOPMENT_TEAM = LFE85M5TCV;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_DEBUG_DYLIB = NO;

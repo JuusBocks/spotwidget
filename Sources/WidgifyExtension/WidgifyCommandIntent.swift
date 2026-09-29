@@ -35,7 +35,7 @@ enum LyricsPageDirection: String, AppEnum {
     ]
 }
 
-struct WidgifyCommandIntent: AppIntent {
+struct WidgifyCommandIntent: AudioPlaybackIntent {
     static let title: LocalizedStringResource = "Control Spotify"
     static let description = IntentDescription("Controls playback in the local Spotify app.")
     static let openAppWhenRun = false
