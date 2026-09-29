@@ -67,6 +67,17 @@ final class WidgifySnapshotServer: @unchecked Sendable {
         }
     }
 
+    func performCommand(_ command: String) {
+        queue.async { [weak self] in
+            guard let self, let script = Self.script(for: command) else { return }
+            _ = self.runAppleScript(script)
+            self.queue.asyncAfter(deadline: .now() + 0.25) { [weak self] in
+                _ = self?.refreshSnapshot()
+                self?.reloadWidgetTimelines()
+            }
+        }
+    }
+
     private func startSocket() {
         socketFD = socket(AF_INET, SOCK_STREAM, 0)
         guard socketFD >= 0 else {
@@ -187,23 +198,7 @@ final class WidgifySnapshotServer: @unchecked Sendable {
             return
         }
 
-        let script: String
-        switch command {
-        case "previous":
-            script = Self.commandScript("previous track")
-        case "play":
-            script = Self.commandScript("play")
-        case "pause":
-            script = Self.commandScript("pause")
-        case "playPause":
-            script = Self.commandScript("playpause")
-        case "next":
-            script = Self.commandScript("next track")
-        case "shuffle":
-            script = Self.shuffleScript
-        case "openSpotify":
-            script = Self.openSpotifyScript
-        default:
+        guard let script = Self.script(for: command) else {
             sendStatus(to: client, code: 400, message: "Bad Request")
             return
         }
@@ -332,6 +327,27 @@ final class WidgifySnapshotServer: @unchecked Sendable {
             tell application id "com.spotify.client" to activate
         end if
         """
+    }
+
+    private static func script(for command: String) -> String? {
+        switch command {
+        case "previous":
+            return commandScript("previous track")
+        case "play":
+            return commandScript("play")
+        case "pause":
+            return commandScript("pause")
+        case "playPause":
+            return commandScript("playpause")
+        case "next":
+            return commandScript("next track")
+        case "shuffle":
+            return shuffleScript
+        case "openSpotify":
+            return openSpotifyScript
+        default:
+            return nil
+        }
     }
 
     private static let openSpotifyScript = """

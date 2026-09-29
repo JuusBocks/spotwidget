@@ -5,14 +5,50 @@ import SwiftUI
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem?
 
+    func applicationWillFinishLaunching(_ notification: Notification) {
+        NSAppleEventManager.shared().setEventHandler(
+            self,
+            andSelector: #selector(handleGetURLEvent(_:withReplyEvent:)),
+            forEventClass: AEEventClass(kInternetEventClass),
+            andEventID: AEEventID(kAEGetURL)
+        )
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
         configureStatusItem()
         WidgifySnapshotServer.shared.start()
     }
 
+    func application(_ application: NSApplication, open urls: [URL]) {
+        for url in urls {
+            handleCommandURL(url)
+        }
+    }
+
     @objc private func quit() {
         NSApp.terminate(nil)
+    }
+
+    private func handleCommandURL(_ url: URL) {
+        guard url.scheme == "widgify",
+              url.host == "command",
+              let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              let command = components.queryItems?.first(where: { $0.name == "command" })?.value else {
+            return
+        }
+
+        NSLog("Widgify received command URL: \(command)")
+        WidgifySnapshotServer.shared.performCommand(command)
+    }
+
+    @objc private func handleGetURLEvent(_ event: NSAppleEventDescriptor, withReplyEvent replyEvent: NSAppleEventDescriptor) {
+        guard let urlString = event.paramDescriptor(forKeyword: keyDirectObject)?.stringValue,
+              let url = URL(string: urlString) else {
+            return
+        }
+
+        handleCommandURL(url)
     }
 
     private func configureStatusItem() {

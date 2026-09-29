@@ -974,7 +974,7 @@ private struct PrimaryPlaybackButton: View {
     let isPlaying: Bool
 
     var body: some View {
-        Button(intent: WidgifyCommandIntent(command: isPlaying ? .pause : .play)) {
+        Link(destination: WidgifyCommandLink.url(for: isPlaying ? .pause : .play)) {
             Image(systemName: isPlaying ? "pause.fill" : "play.fill")
                 .imageScale(.small)
                 .fontWeight(.black)
@@ -1000,7 +1000,7 @@ private struct ControlButton: View {
     var inactiveOpacity = 0.94
 
     var body: some View {
-        Button(intent: WidgifyCommandIntent(command: command)) {
+        Link(destination: WidgifyCommandLink.url(for: command)) {
             ZStack {
                 controlImage
 
@@ -1026,6 +1026,16 @@ private struct ControlButton: View {
         }
 
         return renderingMode == .fullColor ? .green : .white
+    }
+}
+
+private enum WidgifyCommandLink {
+    static func url(for command: WidgifyCommand) -> URL {
+        var components = URLComponents()
+        components.scheme = "widgify"
+        components.host = "command"
+        components.queryItems = [URLQueryItem(name: "command", value: command.rawValue)]
+        return components.url ?? URL(string: "widgify://command?command=openSpotify")!
     }
 }
 
