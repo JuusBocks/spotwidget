@@ -67,17 +67,6 @@ final class WidgifySnapshotServer: @unchecked Sendable {
         }
     }
 
-    func performCommand(_ command: String) {
-        queue.async { [weak self] in
-            guard let self, let script = Self.script(for: command) else { return }
-            _ = self.runAppleScript(script)
-            self.queue.asyncAfter(deadline: .now() + 0.25) { [weak self] in
-                _ = self?.refreshSnapshot()
-                self?.reloadWidgetTimelines()
-            }
-        }
-    }
-
     private func startSocket() {
         socketFD = socket(AF_INET, SOCK_STREAM, 0)
         guard socketFD >= 0 else {

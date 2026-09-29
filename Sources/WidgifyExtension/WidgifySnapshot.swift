@@ -181,6 +181,8 @@ enum WidgifyReader {
     }
 
     static func send(_ command: WidgifyCommand) {
+        wakeHostApp()
+
         if sendToHostApp(command) {
             return
         }
@@ -231,13 +233,30 @@ enum WidgifyReader {
 
         var request = URLRequest(url: url)
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
-        request.timeoutInterval = 0.8
+        request.timeoutInterval = 0.6
 
-        guard let (_, response) = try? EphemeralNetworkSession.shared.synchronousResponse(for: request),
-              let httpResponse = response as? HTTPURLResponse else {
-            return false
+        for attempt in 0..<5 {
+            if attempt > 0 {
+                Thread.sleep(forTimeInterval: 0.2)
+            }
+
+            guard let (_, response) = try? EphemeralNetworkSession.shared.synchronousResponse(for: request),
+                  let httpResponse = response as? HTTPURLResponse else {
+                continue
+            }
+
+            if (200..<300).contains(httpResponse.statusCode) {
+                return true
+            }
         }
-        return (200..<300).contains(httpResponse.statusCode)
+
+        return false
+    }
+
+    private static func wakeHostApp() {
+        _ = runAppleScript("""
+        tell application id "com.leounib.Widgify" to launch
+        """)
     }
 
     private static func runAppleScript(_ source: String) -> String {
