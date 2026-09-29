@@ -181,8 +181,6 @@ enum WidgifyReader {
     }
 
     static func send(_ command: WidgifyCommand) {
-        wakeHostApp()
-
         if sendToHostApp(command) {
             return
         }
@@ -251,12 +249,6 @@ enum WidgifyReader {
         }
 
         return false
-    }
-
-    private static func wakeHostApp() {
-        _ = runAppleScript("""
-        tell application id "com.leounib.Widgify" to launch
-        """)
     }
 
     private static func runAppleScript(_ source: String) -> String {

@@ -945,19 +945,20 @@ private struct PlaybackControlStrip: View {
     let snapshot: WidgifySnapshot
 
     var body: some View {
-        ZStack {
-            HStack(spacing: 18) {
+        HStack(spacing: 10) {
+            ControlButton(systemName: "shuffle", command: .shuffle, isActive: snapshot.isShuffling, inactiveOpacity: 0.54)
+
+            Spacer(minLength: 0)
+
+            HStack(spacing: 12) {
                 ControlButton(systemName: "backward.fill", command: .previous)
                 PrimaryPlaybackButton(isPlaying: snapshot.isPlaying)
                 ControlButton(systemName: "forward.fill", command: .next)
             }
-            .frame(maxWidth: .infinity, alignment: .center)
 
-            HStack {
-                ControlButton(systemName: "shuffle", command: .shuffle, isActive: snapshot.isShuffling, inactiveOpacity: 0.54)
-                Spacer(minLength: 0)
-                ControlButton(systemName: "music.note.list", command: .openSpotify)
-            }
+            Spacer(minLength: 0)
+
+            ControlButton(systemName: "music.note.list", command: .openSpotify)
         }
         .foregroundStyle(.white.opacity(0.94))
         .frame(maxWidth: .infinity, minHeight: 24, alignment: .center)
@@ -982,6 +983,8 @@ private struct PrimaryPlaybackButton: View {
                 }
         }
         .buttonStyle(.plain)
+        .frame(width: 34, height: 34)
+        .contentShape(Rectangle())
     }
 }
 
@@ -1005,6 +1008,8 @@ private struct ControlButton: View {
             }
         }
         .buttonStyle(.plain)
+        .frame(width: 28, height: 28)
+        .contentShape(Rectangle())
     }
 
     private var controlImage: some View {
