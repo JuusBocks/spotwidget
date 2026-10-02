@@ -964,11 +964,12 @@ private struct CompactPlaybackControlStrip: View {
     let snapshot: SpotWidgetSnapshot
 
     var body: some View {
-        HStack(spacing: 8) {
-            ControlButton(systemName: "music.note.list", command: .openSpotify, size: 24)
-            ControlButton(systemName: "backward.fill", command: .previous, size: 24)
-            PrimaryPlaybackButton(isPlaying: snapshot.isPlaying, size: 30, padding: 5)
-            ControlButton(systemName: "forward.fill", command: .next, size: 24)
+        HStack(spacing: 4) {
+            ControlButton(systemName: "shuffle", command: .shuffle, isActive: snapshot.isShuffling, inactiveOpacity: 0.54, size: 22)
+            ControlButton(systemName: "music.note.list", command: .openSpotify, size: 22)
+            ControlButton(systemName: "backward.fill", command: .previous, size: 22)
+            PrimaryPlaybackButton(isPlaying: snapshot.isPlaying, size: 28, padding: 4.5)
+            ControlButton(systemName: "forward.fill", command: .next, size: 22)
         }
         .foregroundStyle(.white.opacity(0.94))
         .frame(maxWidth: .infinity, minHeight: 30, alignment: .center)
