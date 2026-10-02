@@ -2,7 +2,7 @@ import Foundation
 import Darwin
 import WidgetKit
 
-private struct ServedWidgifySnapshot: Encodable {
+private struct ServedSpotWidgetSnapshot: Encodable {
     var title: String
     var artist: String
     var album: String
@@ -14,7 +14,7 @@ private struct ServedWidgifySnapshot: Encodable {
     var status: String
     var updatedAt: Date
 
-    static let idle = ServedWidgifySnapshot(
+    static let idle = ServedSpotWidgetSnapshot(
         title: "Spotify",
         artist: "Start playback",
         album: "",
@@ -27,7 +27,7 @@ private struct ServedWidgifySnapshot: Encodable {
         updatedAt: Date()
     )
 
-    func requiresTimelineReload(comparedTo other: ServedWidgifySnapshot) -> Bool {
+    func requiresTimelineReload(comparedTo other: ServedSpotWidgetSnapshot) -> Bool {
         title != other.title ||
             artist != other.artist ||
             album != other.album ||
@@ -39,16 +39,16 @@ private struct ServedWidgifySnapshot: Encodable {
     }
 }
 
-final class WidgifySnapshotServer: @unchecked Sendable {
-    static let shared = WidgifySnapshotServer()
+final class SpotWidgetSnapshotServer: @unchecked Sendable {
+    static let shared = SpotWidgetSnapshotServer()
     static let port: UInt16 = 47391
-    private static let widgetKind = "WidgifyWidgetPlayer"
+    private static let widgetKind = "SpotWidgetWidgetPlayer"
     private static let snapshotRefreshInterval: TimeInterval = 1
     private static let timelineKeepAliveInterval: TimeInterval = 20
 
-    private let queue = DispatchQueue(label: "com.leounib.Widgify.snapshot-server")
+    private let queue = DispatchQueue(label: "com.leounib.SpotWidget.snapshot-server")
     private let lock = NSLock()
-    private var latestSnapshot = ServedWidgifySnapshot.idle
+    private var latestSnapshot = ServedSpotWidgetSnapshot.idle
     private var socketFD: Int32 = -1
     private var socketSource: DispatchSourceRead?
     private var refreshTimer: DispatchSourceTimer?
@@ -58,7 +58,7 @@ final class WidgifySnapshotServer: @unchecked Sendable {
     func start() {
         guard !isStarted else { return }
         isStarted = true
-        NSLog("Widgify server starting on 127.0.0.1:\(Self.port)")
+        NSLog("SpotWidget server starting on 127.0.0.1:\(Self.port)")
         queue.async { [weak self] in
             guard let self else { return }
             self.startSocket()
@@ -69,7 +69,7 @@ final class WidgifySnapshotServer: @unchecked Sendable {
 
     func performCommand(_ command: String) {
         guard let script = Self.script(for: command) else {
-            NSLog("Widgify ignored unknown command: \(command)")
+            NSLog("SpotWidget ignored unknown command: \(command)")
             return
         }
 
@@ -86,7 +86,7 @@ final class WidgifySnapshotServer: @unchecked Sendable {
     private func startSocket() {
         socketFD = socket(AF_INET, SOCK_STREAM, 0)
         guard socketFD >= 0 else {
-            NSLog("Widgify server socket() failed: \(errno)")
+            NSLog("SpotWidget server socket() failed: \(errno)")
             return
         }
 
@@ -105,14 +105,14 @@ final class WidgifySnapshotServer: @unchecked Sendable {
             }
         }
         guard bindResult == 0 else {
-            NSLog("Widgify server bind() failed: \(errno)")
+            NSLog("SpotWidget server bind() failed: \(errno)")
             close(socketFD)
             socketFD = -1
             return
         }
 
         guard listen(socketFD, 8) == 0 else {
-            NSLog("Widgify server listen() failed: \(errno)")
+            NSLog("SpotWidget server listen() failed: \(errno)")
             close(socketFD)
             socketFD = -1
             return
@@ -127,7 +127,7 @@ final class WidgifySnapshotServer: @unchecked Sendable {
         }
         source.resume()
         socketSource = source
-        NSLog("Widgify server listening on 127.0.0.1:\(Self.port)")
+        NSLog("SpotWidget server listening on 127.0.0.1:\(Self.port)")
     }
 
     private func startRefreshTimer() {
@@ -220,13 +220,13 @@ final class WidgifySnapshotServer: @unchecked Sendable {
         return components.queryItems?.first(where: { $0.name == "command" })?.value
     }
 
-    private func cachedSnapshot() -> ServedWidgifySnapshot {
+    private func cachedSnapshot() -> ServedSpotWidgetSnapshot {
         lock.lock()
         defer { lock.unlock() }
         return latestSnapshot
     }
 
-    private func updateSnapshot(_ snapshot: ServedWidgifySnapshot) -> Bool {
+    private func updateSnapshot(_ snapshot: ServedSpotWidgetSnapshot) -> Bool {
         lock.lock()
         let previous = latestSnapshot
         latestSnapshot = snapshot
@@ -239,7 +239,7 @@ final class WidgifySnapshotServer: @unchecked Sendable {
         let parts = output.components(separatedBy: "\n")
 
         guard parts.first != "NOT_RUNNING" else {
-            var snapshot = ServedWidgifySnapshot.idle
+            var snapshot = ServedSpotWidgetSnapshot.idle
             snapshot.artist = "Open Spotify"
             snapshot.status = "Spotify is closed"
             snapshot.updatedAt = Date()
@@ -247,13 +247,13 @@ final class WidgifySnapshotServer: @unchecked Sendable {
         }
 
         guard parts.first != "NO_TRACK", parts.count >= 8 else {
-            var snapshot = ServedWidgifySnapshot.idle
+            var snapshot = ServedSpotWidgetSnapshot.idle
             snapshot.updatedAt = Date()
             return updateSnapshot(snapshot)
         }
 
         let playState = parts[4]
-        let snapshot = ServedWidgifySnapshot(
+        let snapshot = ServedSpotWidgetSnapshot(
             title: parts[0].isEmpty ? "Unknown track" : parts[0],
             artist: parts[1].isEmpty ? "Unknown artist" : parts[1],
             album: parts[2],
@@ -290,7 +290,7 @@ final class WidgifySnapshotServer: @unchecked Sendable {
         let result = script.executeAndReturnError(&error)
 
         if let error {
-            NSLog("Widgify AppleScript failed: \(error)")
+            NSLog("SpotWidget AppleScript failed: \(error)")
             return "NO_TRACK"
         }
 

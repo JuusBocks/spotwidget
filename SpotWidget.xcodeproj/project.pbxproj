@@ -7,18 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A10000000000000000000001 /* WidgifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000011 /* WidgifyApp.swift */; };
+		A10000000000000000000001 /* SpotWidgetApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000011 /* SpotWidgetApp.swift */; };
 		A10000000000000000000002 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000012 /* AppDelegate.swift */; };
-		A10000000000000000000005 /* WidgifySnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000015 /* WidgifySnapshot.swift */; };
-		A10000000000000000000006 /* WidgifyCommandIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000016 /* WidgifyCommandIntent.swift */; };
-		A10000000000000000000007 /* WidgifyWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000017 /* WidgifyWidget.swift */; };
-		A10000000000000000000008 /* WidgifyWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000018 /* WidgifyWidgetBundle.swift */; };
-		A10000000000000000000009 /* WidgifyWidgetConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000019 /* WidgifyWidgetConstants.swift */; };
-		A1000000000000000000000A /* WidgifyExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001B /* WidgifyExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		A1000000000000000000000E /* WidgifySnapshotServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001F /* WidgifySnapshotServer.swift */; };
-		A10000000000000000000023 /* WidgifySnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000015 /* WidgifySnapshot.swift */; };
-		A10000000000000000000024 /* WidgifyCommandIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000016 /* WidgifyCommandIntent.swift */; };
-		A10000000000000000000025 /* WidgifyWidgetConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000019 /* WidgifyWidgetConstants.swift */; };
+		A10000000000000000000005 /* SpotWidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000015 /* SpotWidgetSnapshot.swift */; };
+		A10000000000000000000006 /* SpotWidgetCommandIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000016 /* SpotWidgetCommandIntent.swift */; };
+		A10000000000000000000007 /* SpotWidgetWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000017 /* SpotWidgetWidget.swift */; };
+		A10000000000000000000008 /* SpotWidgetWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000018 /* SpotWidgetWidgetBundle.swift */; };
+		A10000000000000000000009 /* SpotWidgetWidgetConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000019 /* SpotWidgetWidgetConstants.swift */; };
+		A1000000000000000000000A /* SpotWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001B /* SpotWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A1000000000000000000000E /* SpotWidgetSnapshotServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001F /* SpotWidgetSnapshotServer.swift */; };
+		A10000000000000000000023 /* SpotWidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000015 /* SpotWidgetSnapshot.swift */; };
+		A10000000000000000000024 /* SpotWidgetCommandIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000016 /* SpotWidgetCommandIntent.swift */; };
+		A10000000000000000000025 /* SpotWidgetWidgetConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000019 /* SpotWidgetWidgetConstants.swift */; };
 		A20000000000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* Assets.xcassets */; };
 		A20000000000000000000002 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
@@ -29,7 +29,7 @@
 			containerPortal = A10000000000000000000020 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = A10000000000000000000022;
-			remoteInfo = WidgifyExtension;
+			remoteInfo = SpotWidgetExtension;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -40,7 +40,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				A1000000000000000000000A /* WidgifyExtension.appex in Embed Foundation Extensions */,
+				A1000000000000000000000A /* SpotWidgetExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -48,20 +48,20 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		A10000000000000000000010 /* Widgify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Widgify.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A10000000000000000000011 /* WidgifyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgifyApp.swift; sourceTree = "<group>"; };
+		A10000000000000000000010 /* SpotWidget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpotWidget.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A10000000000000000000011 /* SpotWidgetApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotWidgetApp.swift; sourceTree = "<group>"; };
 		A10000000000000000000012 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		A10000000000000000000015 /* WidgifySnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgifySnapshot.swift; sourceTree = "<group>"; };
-		A10000000000000000000016 /* WidgifyCommandIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgifyCommandIntent.swift; sourceTree = "<group>"; };
-		A10000000000000000000017 /* WidgifyWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgifyWidget.swift; sourceTree = "<group>"; };
-		A10000000000000000000018 /* WidgifyWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgifyWidgetBundle.swift; sourceTree = "<group>"; };
-		A10000000000000000000019 /* WidgifyWidgetConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgifyWidgetConstants.swift; sourceTree = "<group>"; };
+		A10000000000000000000015 /* SpotWidgetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotWidgetSnapshot.swift; sourceTree = "<group>"; };
+		A10000000000000000000016 /* SpotWidgetCommandIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotWidgetCommandIntent.swift; sourceTree = "<group>"; };
+		A10000000000000000000017 /* SpotWidgetWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotWidgetWidget.swift; sourceTree = "<group>"; };
+		A10000000000000000000018 /* SpotWidgetWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotWidgetWidgetBundle.swift; sourceTree = "<group>"; };
+		A10000000000000000000019 /* SpotWidgetWidgetConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotWidgetWidgetConstants.swift; sourceTree = "<group>"; };
 		A1000000000000000000001A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A1000000000000000000001B /* WidgifyExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WidgifyExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1000000000000000000001B /* SpotWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SpotWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1000000000000000000001C /* WidgetExtensionInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = WidgetExtensionInfo.plist; sourceTree = "<group>"; };
 		A1000000000000000000001D /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
 		A1000000000000000000001E /* WidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WidgetExtension.entitlements; sourceTree = "<group>"; };
-		A1000000000000000000001F /* WidgifySnapshotServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgifySnapshotServer.swift; sourceTree = "<group>"; };
+		A1000000000000000000001F /* SpotWidgetSnapshotServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotWidgetSnapshotServer.swift; sourceTree = "<group>"; };
 		A20000000000000000000003 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -95,32 +95,32 @@
 		A10000000000000000000041 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				A10000000000000000000042 /* Widgify */,
-				A10000000000000000000043 /* WidgifyExtension */,
+				A10000000000000000000042 /* SpotWidget */,
+				A10000000000000000000043 /* SpotWidgetExtension */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
 		};
-		A10000000000000000000042 /* Widgify */ = {
+		A10000000000000000000042 /* SpotWidget */ = {
 			isa = PBXGroup;
 			children = (
-				A10000000000000000000011 /* WidgifyApp.swift */,
+				A10000000000000000000011 /* SpotWidgetApp.swift */,
 				A10000000000000000000012 /* AppDelegate.swift */,
-				A1000000000000000000001F /* WidgifySnapshotServer.swift */,
+				A1000000000000000000001F /* SpotWidgetSnapshotServer.swift */,
 			);
-			path = Widgify;
+			path = SpotWidget;
 			sourceTree = "<group>";
 		};
-		A10000000000000000000043 /* WidgifyExtension */ = {
+		A10000000000000000000043 /* SpotWidgetExtension */ = {
 			isa = PBXGroup;
 			children = (
-				A10000000000000000000015 /* WidgifySnapshot.swift */,
-				A10000000000000000000016 /* WidgifyCommandIntent.swift */,
-				A10000000000000000000017 /* WidgifyWidget.swift */,
-				A10000000000000000000018 /* WidgifyWidgetBundle.swift */,
-				A10000000000000000000019 /* WidgifyWidgetConstants.swift */,
+				A10000000000000000000015 /* SpotWidgetSnapshot.swift */,
+				A10000000000000000000016 /* SpotWidgetCommandIntent.swift */,
+				A10000000000000000000017 /* SpotWidgetWidget.swift */,
+				A10000000000000000000018 /* SpotWidgetWidgetBundle.swift */,
+				A10000000000000000000019 /* SpotWidgetWidgetConstants.swift */,
 			);
-			path = WidgifyExtension;
+			path = SpotWidgetExtension;
 			sourceTree = "<group>";
 		};
 		A10000000000000000000044 /* Resources */ = {
@@ -138,8 +138,8 @@
 		A10000000000000000000045 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A10000000000000000000010 /* Widgify.app */,
-				A1000000000000000000001B /* WidgifyExtension.appex */,
+				A10000000000000000000010 /* SpotWidget.app */,
+				A1000000000000000000001B /* SpotWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -147,9 +147,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A10000000000000000000021 /* Widgify */ = {
+		A10000000000000000000021 /* SpotWidget */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A10000000000000000000060 /* Build configuration list for PBXNativeTarget "Widgify" */;
+			buildConfigurationList = A10000000000000000000060 /* Build configuration list for PBXNativeTarget "SpotWidget" */;
 			buildPhases = (
 				A10000000000000000000050 /* Sources */,
 				A10000000000000000000030 /* Frameworks */,
@@ -161,14 +161,14 @@
 			dependencies = (
 				A1000000000000000000000D /* PBXTargetDependency */,
 			);
-			name = Widgify;
-			productName = Widgify;
-			productReference = A10000000000000000000010 /* Widgify.app */;
+			name = SpotWidget;
+			productName = SpotWidget;
+			productReference = A10000000000000000000010 /* SpotWidget.app */;
 			productType = "com.apple.product-type.application";
 		};
-		A10000000000000000000022 /* WidgifyExtension */ = {
+		A10000000000000000000022 /* SpotWidgetExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A10000000000000000000070 /* Build configuration list for PBXNativeTarget "WidgifyExtension" */;
+			buildConfigurationList = A10000000000000000000070 /* Build configuration list for PBXNativeTarget "SpotWidgetExtension" */;
 			buildPhases = (
 				A10000000000000000000051 /* Sources */,
 				A10000000000000000000031 /* Frameworks */,
@@ -178,9 +178,9 @@
 			);
 			dependencies = (
 			);
-			name = WidgifyExtension;
-			productName = WidgifyExtension;
-			productReference = A1000000000000000000001B /* WidgifyExtension.appex */;
+			name = SpotWidgetExtension;
+			productName = SpotWidgetExtension;
+			productReference = A1000000000000000000001B /* SpotWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -201,7 +201,7 @@
 					};
 				};
 			};
-			buildConfigurationList = A10000000000000000000080 /* Build configuration list for PBXProject "Widgify" */;
+			buildConfigurationList = A10000000000000000000080 /* Build configuration list for PBXProject "SpotWidget" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -214,8 +214,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A10000000000000000000021 /* Widgify */,
-				A10000000000000000000022 /* WidgifyExtension */,
+				A10000000000000000000021 /* SpotWidget */,
+				A10000000000000000000022 /* SpotWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -244,12 +244,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A10000000000000000000001 /* WidgifyApp.swift in Sources */,
+				A10000000000000000000001 /* SpotWidgetApp.swift in Sources */,
 				A10000000000000000000002 /* AppDelegate.swift in Sources */,
-				A1000000000000000000000E /* WidgifySnapshotServer.swift in Sources */,
-				A10000000000000000000023 /* WidgifySnapshot.swift in Sources */,
-				A10000000000000000000024 /* WidgifyCommandIntent.swift in Sources */,
-				A10000000000000000000025 /* WidgifyWidgetConstants.swift in Sources */,
+				A1000000000000000000000E /* SpotWidgetSnapshotServer.swift in Sources */,
+				A10000000000000000000023 /* SpotWidgetSnapshot.swift in Sources */,
+				A10000000000000000000024 /* SpotWidgetCommandIntent.swift in Sources */,
+				A10000000000000000000025 /* SpotWidgetWidgetConstants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,11 +257,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A10000000000000000000005 /* WidgifySnapshot.swift in Sources */,
-				A10000000000000000000006 /* WidgifyCommandIntent.swift in Sources */,
-				A10000000000000000000007 /* WidgifyWidget.swift in Sources */,
-				A10000000000000000000008 /* WidgifyWidgetBundle.swift in Sources */,
-				A10000000000000000000009 /* WidgifyWidgetConstants.swift in Sources */,
+				A10000000000000000000005 /* SpotWidgetSnapshot.swift in Sources */,
+				A10000000000000000000006 /* SpotWidgetCommandIntent.swift in Sources */,
+				A10000000000000000000007 /* SpotWidgetWidget.swift in Sources */,
+				A10000000000000000000008 /* SpotWidgetWidgetBundle.swift in Sources */,
+				A10000000000000000000009 /* SpotWidgetWidgetConstants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -270,7 +270,7 @@
 /* Begin PBXTargetDependency section */
 		A1000000000000000000000D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A10000000000000000000022 /* WidgifyExtension */;
+			target = A10000000000000000000022 /* SpotWidgetExtension */;
 			targetProxy = A1000000000000000000000B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -298,8 +298,8 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.leounib.Widgify;
-				PRODUCT_NAME = Widgify;
+				PRODUCT_BUNDLE_IDENTIFIER = com.leounib.SpotWidget;
+				PRODUCT_NAME = SpotWidget;
 				SDKROOT = macosx;
 				SWIFT_VERSION = 6.0;
 			};
@@ -327,8 +327,8 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.leounib.Widgify;
-				PRODUCT_NAME = Widgify;
+				PRODUCT_BUNDLE_IDENTIFIER = com.leounib.SpotWidget;
+				PRODUCT_NAME = SpotWidget;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_VERSION = 6.0;
@@ -357,8 +357,8 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.leounib.Widgify.WidgifyExtension;
-				PRODUCT_NAME = WidgifyExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.leounib.SpotWidget.SpotWidgetExtension;
+				PRODUCT_NAME = SpotWidgetExtension;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 6.0;
@@ -387,8 +387,8 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.leounib.Widgify.WidgifyExtension;
-				PRODUCT_NAME = WidgifyExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.leounib.SpotWidget.SpotWidgetExtension;
+				PRODUCT_NAME = SpotWidgetExtension;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -489,7 +489,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A10000000000000000000060 /* Build configuration list for PBXNativeTarget "Widgify" */ = {
+		A10000000000000000000060 /* Build configuration list for PBXNativeTarget "SpotWidget" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A10000000000000000000061 /* Debug */,
@@ -498,7 +498,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A10000000000000000000070 /* Build configuration list for PBXNativeTarget "WidgifyExtension" */ = {
+		A10000000000000000000070 /* Build configuration list for PBXNativeTarget "SpotWidgetExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A10000000000000000000071 /* Debug */,
@@ -507,7 +507,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A10000000000000000000080 /* Build configuration list for PBXProject "Widgify" */ = {
+		A10000000000000000000080 /* Build configuration list for PBXProject "SpotWidget" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A10000000000000000000081 /* Debug */,

@@ -7,13 +7,13 @@ CONFIGURATION="${CONFIGURATION:-Release}"
 TEAM_ID="${DEVELOPMENT_TEAM:-}"
 VERSION="${VERSION:-}"
 DIST_DIR="$ROOT_DIR/dist"
-DMG_VOLUME_NAME="Widgify"
+DMG_VOLUME_NAME="SpotWidget"
 
 usage() {
   cat <<'USAGE'
 Usage: ./scripts/package-app.sh [--team-id TEAM_ID] [--debug] [--version VERSION]
 
-Builds Widgify and creates downloadable zip and dmg packages in dist/.
+Builds SpotWidget and creates downloadable zip and dmg packages in dist/.
 
 Options:
   --team-id TEAM_ID   Apple Developer Team ID. Optional after signing is
@@ -79,7 +79,7 @@ if [[ "$VERSION" == *'$('* ]]; then
 fi
 
 if [[ -z "$VERSION" ]]; then
-  VERSION="$(awk -F' = ' '/MARKETING_VERSION/ { gsub(/;/, "", $2); print $2; exit }' "$ROOT_DIR/Widgify.xcodeproj/project.pbxproj")"
+  VERSION="$(awk -F' = ' '/MARKETING_VERSION/ { gsub(/;/, "", $2); print $2; exit }' "$ROOT_DIR/SpotWidget.xcodeproj/project.pbxproj")"
 fi
 
 if [[ -z "$VERSION" ]]; then
@@ -87,8 +87,8 @@ if [[ -z "$VERSION" ]]; then
 fi
 
 XCODEBUILD_ARGS=(
-  -project "$ROOT_DIR/Widgify.xcodeproj"
-  -scheme Widgify
+  -project "$ROOT_DIR/SpotWidget.xcodeproj"
+  -scheme SpotWidget
   -configuration "$CONFIGURATION"
   -destination "platform=macOS"
   -derivedDataPath "$DERIVED_DATA_PATH"
@@ -100,18 +100,18 @@ if [[ -n "$TEAM_ID" ]]; then
   XCODEBUILD_ARGS+=(DEVELOPMENT_TEAM="$TEAM_ID")
 fi
 
-echo "Building Widgify $CONFIGURATION..."
+echo "Building SpotWidget $CONFIGURATION..."
 xcodebuild "${XCODEBUILD_ARGS[@]}"
 
-BUILT_APP="$DERIVED_DATA_PATH/Build/Products/$CONFIGURATION/Widgify.app"
-ZIP_PATH="$DIST_DIR/Widgify-$VERSION-macOS.zip"
+BUILT_APP="$DERIVED_DATA_PATH/Build/Products/$CONFIGURATION/SpotWidget.app"
+ZIP_PATH="$DIST_DIR/SpotWidget-$VERSION-macOS.zip"
 SHA_PATH="$ZIP_PATH.sha256"
 DMG_STAGING_DIR="$DIST_DIR/dmg-staging"
-DMG_PATH="$DIST_DIR/Widgify-$VERSION-macOS.dmg"
+DMG_PATH="$DIST_DIR/SpotWidget-$VERSION-macOS.dmg"
 DMG_SHA_PATH="$DMG_PATH.sha256"
 
 if [[ ! -d "$BUILT_APP" ]]; then
-  echo "Build finished, but Widgify.app was not found at $BUILT_APP" >&2
+  echo "Build finished, but SpotWidget.app was not found at $BUILT_APP" >&2
   exit 1
 fi
 
@@ -126,14 +126,14 @@ shasum -a 256 "$ZIP_PATH" | tee "$SHA_PATH"
 echo "Creating $DMG_PATH..."
 mkdir -p "$DMG_STAGING_DIR"
 cp -R "$BUILT_APP" "$DMG_STAGING_DIR/"
-ln -s /Applications "$DMG_STAGING_DIR/→ Applications - drag Widgify here"
+ln -s /Applications "$DMG_STAGING_DIR/→ Applications - drag SpotWidget here"
 cat > "$DMG_STAGING_DIR/READ ME - Next Steps.txt" <<'STEPS'
-Install Widgify
+Install SpotWidget
 
-1. Drag Widgify.app onto "→ Applications - drag Widgify here".
-2. Open Widgify from Applications.
+1. Drag SpotWidget.app onto "→ Applications - drag SpotWidget here".
+2. Open SpotWidget from Applications.
 3. Use Privacy & Security > Open Anyway if macOS blocks it.
-4. Add Widgify from desktop widgets.
+4. Add SpotWidget from desktop widgets.
 5. Play Spotify and use the widget.
 STEPS
 

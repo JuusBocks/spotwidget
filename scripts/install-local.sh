@@ -10,7 +10,7 @@ usage() {
   cat <<'USAGE'
 Usage: ./scripts/install-local.sh [--team-id TEAM_ID] [--release]
 
-Builds Widgify with Xcode, installs it into /Applications, registers the
+Builds SpotWidget with Xcode, installs it into /Applications, registers the
 widget extension, refreshes WidgetKit, and opens the menu bar helper.
 
 Options:
@@ -57,8 +57,8 @@ if [[ -z "${DEVELOPER_DIR:-}" && -d "/Applications/Xcode.app/Contents/Developer"
 fi
 
 XCODEBUILD_ARGS=(
-  -project "$ROOT_DIR/Widgify.xcodeproj"
-  -scheme Widgify
+  -project "$ROOT_DIR/SpotWidget.xcodeproj"
+  -scheme SpotWidget
   -configuration "$CONFIGURATION"
   -destination "platform=macOS"
   -derivedDataPath "$DERIVED_DATA_PATH"
@@ -70,19 +70,19 @@ if [[ -n "$TEAM_ID" ]]; then
   XCODEBUILD_ARGS+=(DEVELOPMENT_TEAM="$TEAM_ID")
 fi
 
-echo "Building Widgify..."
+echo "Building SpotWidget..."
 xcodebuild "${XCODEBUILD_ARGS[@]}"
 
-BUILT_APP="$DERIVED_DATA_PATH/Build/Products/$CONFIGURATION/Widgify.app"
-INSTALL_APP="/Applications/Widgify.app"
-WIDGET_APP="$INSTALL_APP/Contents/PlugIns/WidgifyExtension.appex"
+BUILT_APP="$DERIVED_DATA_PATH/Build/Products/$CONFIGURATION/SpotWidget.app"
+INSTALL_APP="/Applications/SpotWidget.app"
+WIDGET_APP="$INSTALL_APP/Contents/PlugIns/SpotWidgetExtension.appex"
 
 if [[ ! -d "$BUILT_APP" ]]; then
-  echo "Build finished, but Widgify.app was not found at $BUILT_APP" >&2
+  echo "Build finished, but SpotWidget.app was not found at $BUILT_APP" >&2
   exit 1
 fi
 
-echo "Installing Widgify into /Applications..."
+echo "Installing SpotWidget into /Applications..."
 pkill -f "$INSTALL_APP" >/dev/null 2>&1 || true
 rm -rf "$INSTALL_APP"
 cp -R "$BUILT_APP" /Applications/
@@ -95,18 +95,18 @@ pluginkit -a "$WIDGET_APP" >/dev/null 2>&1 || true
 echo "Refreshing WidgetKit..."
 killall chronod >/dev/null 2>&1 || true
 
-echo "Opening Widgify..."
+echo "Opening SpotWidget..."
 open "$INSTALL_APP"
 
 cat <<'DONE'
 
-Widgify is installed.
+SpotWidget is installed.
 
 To add it:
 1. Control-click the desktop.
 2. Choose Edit Widgets.
-3. Search for Widgify.
+3. Search for SpotWidget.
 4. Drag it to the desktop.
 
-If macOS asks for Automation access, allow Widgify to control Spotify.
+If macOS asks for Automation access, allow SpotWidget to control Spotify.
 DONE

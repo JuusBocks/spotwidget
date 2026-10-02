@@ -9,15 +9,15 @@ usage() {
   cat <<'USAGE'
 Usage: ./scripts/clean-test-install.sh [--dry-run] [--keep-derived-data]
 
-Removes local Widgify test installs and stale widget registrations so a fresh
+Removes local SpotWidget test installs and stale widget registrations so a fresh
 GitHub DMG can be tested cleanly.
 
 Actions:
-  - Quit Widgify if it is running.
-  - Unregister Widgify and old SpotifyWidget widget extensions from PluginKit.
-  - Remove /Applications/Widgify.app and old /Applications/Spotify Widget.app.
-  - Remove old Widgify/SpotifyWidgetMac Xcode DerivedData folders.
-  - Delete the newest Widgify macOS DMG from Downloads.
+  - Quit SpotWidget if it is running.
+  - Unregister SpotWidget and old SpotifyWidget widget extensions from PluginKit.
+  - Remove /Applications/SpotWidget.app and old /Applications/Spotify Widget.app.
+  - Remove old SpotWidget/SpotifyWidgetMac Xcode DerivedData folders.
+  - Delete the newest SpotWidget macOS DMG from Downloads.
   - Refresh WidgetKit and Launch Services caches.
 
 Options:
@@ -70,30 +70,30 @@ unregister_plugin_path() {
   fi
 }
 
-echo "Cleaning Widgify test install..."
+echo "Cleaning SpotWidget test install..."
 
-run pkill -x Widgify
+run pkill -x SpotWidget
 
-unregister_plugin_path "/Applications/Widgify.app/Contents/PlugIns/WidgifyExtension.appex"
-unregister_plugin_path "/Applications/Widgify.app/Contents/PlugIns/SpotifyWidgetExtension.appex"
+unregister_plugin_path "/Applications/SpotWidget.app/Contents/PlugIns/SpotWidgetExtension.appex"
+unregister_plugin_path "/Applications/SpotWidget.app/Contents/PlugIns/SpotifyWidgetExtension.appex"
 unregister_plugin_path "/Applications/Spotify Widget.app/Contents/PlugIns/SpotifyWidgetExtension.appex"
-unregister_plugin_path "/Applications/Spotify Widget.app/Contents/PlugIns/WidgifyExtension.appex"
+unregister_plugin_path "/Applications/Spotify Widget.app/Contents/PlugIns/SpotWidgetExtension.appex"
 
 if command -v pluginkit >/dev/null 2>&1; then
   while IFS= read -r plugin_path; do
     unregister_plugin_path "$plugin_path"
   done < <(
     pluginkit -m -A -D -v 2>/dev/null |
-      awk '/com\.leounib\.Widgify\.(WidgifyExtension|SpotifyWidgetExtension)/ { print $NF }'
+      awk '/com\.leounib\.SpotWidget\.(SpotWidgetExtension|SpotifyWidgetExtension)/ { print $NF }'
   )
 fi
 
-remove_path "/Applications/Widgify.app"
+remove_path "/Applications/SpotWidget.app"
 remove_path "/Applications/Spotify Widget.app"
 
 if [[ "$DELETE_DERIVED_DATA" -eq 1 ]]; then
   for path in \
-    "${HOME}/Library/Developer/Xcode/DerivedData/Widgify-"* \
+    "${HOME}/Library/Developer/Xcode/DerivedData/SpotWidget-"* \
     "${HOME}/Library/Developer/Xcode/DerivedData/SpotifyWidgetMac-"*
   do
     [[ -e "$path" ]] && remove_path "$path"
@@ -102,10 +102,10 @@ fi
 
 latest_dmg="$(
   find "$DOWNLOADS_DIR" -maxdepth 1 -type f \( \
-      -name 'Widgify-*-macOS*.dmg' -o \
-      -name 'widgify-*-macOS*.dmg' -o \
-      -name 'Widgify*.dmg' -o \
-      -name 'widgify*.dmg' \
+      -name 'SpotWidget-*-macOS*.dmg' -o \
+      -name 'spotwidget-*-macOS*.dmg' -o \
+      -name 'SpotWidget*.dmg' -o \
+      -name 'spotwidget*.dmg' \
     \) -print0 2>/dev/null |
     xargs -0 ls -t 2>/dev/null |
     head -n 1 || true
@@ -114,11 +114,11 @@ latest_dmg="$(
 if [[ -n "$latest_dmg" ]]; then
   remove_path "$latest_dmg"
 else
-  echo "• No Widgify DMG found in Downloads"
+  echo "• No SpotWidget DMG found in Downloads"
 fi
 
-if [[ -d "/Volumes/Widgify" ]]; then
-  run hdiutil detach "/Volumes/Widgify"
+if [[ -d "/Volumes/SpotWidget" ]]; then
+  run hdiutil detach "/Volumes/SpotWidget"
 fi
 
 run /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain user
@@ -127,11 +127,11 @@ run killall WidgetKitExtension
 
 cat <<'DONE'
 
-Widgify test install cleanup complete.
+SpotWidget test install cleanup complete.
 
 Next:
 1. Download the newest DMG from GitHub.
-2. Drag Widgify.app to Applications.
-3. Open Widgify once.
-4. Open the widget picker and add Widgify again.
+2. Drag SpotWidget.app to Applications.
+3. Open SpotWidget once.
+4. Open the widget picker and add SpotWidget again.
 DONE

@@ -1,6 +1,6 @@
 import Foundation
 
-struct WidgifySnapshot: Equatable {
+struct SpotWidgetSnapshot: Equatable {
     var title: String
     var artist: String
     var album: String
@@ -12,7 +12,7 @@ struct WidgifySnapshot: Equatable {
     var isShuffling: Bool
     var status: String
 
-    static let idle = WidgifySnapshot(
+    static let idle = SpotWidgetSnapshot(
         title: "Spotify",
         artist: "Start playback",
         album: "",
@@ -26,7 +26,7 @@ struct WidgifySnapshot: Equatable {
     )
 }
 
-struct WidgifyLyrics: Equatable {
+struct SpotWidgetLyrics: Equatable {
     struct Line: Equatable {
         var time: TimeInterval?
         var text: String
@@ -36,7 +36,7 @@ struct WidgifyLyrics: Equatable {
     var lines: [Line]
     var isSynced: Bool
 
-    static let idle = WidgifyLyrics(status: "Lyrics", lines: [], isSynced: false)
+    static let idle = SpotWidgetLyrics(status: "Lyrics", lines: [], isSynced: false)
 
     var hasLyrics: Bool {
         !lines.isEmpty
@@ -70,7 +70,7 @@ struct WidgifyLyrics: Equatable {
 enum LyricsPageStore {
     private static let cache = LyricsPageCache()
 
-    static func key(for snapshot: WidgifySnapshot) -> String {
+    static func key(for snapshot: SpotWidgetSnapshot) -> String {
         [
             snapshot.title.lowercased(),
             snapshot.artist.lowercased(),
@@ -96,8 +96,8 @@ enum LyricsPageStore {
     }
 }
 
-enum WidgifyReader {
-    static func currentSnapshot(loadArtwork: Bool = true) -> WidgifySnapshot {
+enum SpotWidgetReader {
+    static func currentSnapshot(loadArtwork: Bool = true) -> SpotWidgetSnapshot {
         if let bridgedSnapshot = currentSnapshotFromHostApp(loadArtwork: loadArtwork) {
             return bridgedSnapshot
         }
@@ -106,14 +106,14 @@ enum WidgifyReader {
         let parts = output.components(separatedBy: "\n")
 
         guard parts.first != "NOT_RUNNING" else {
-            var snapshot = WidgifySnapshot.idle
+            var snapshot = SpotWidgetSnapshot.idle
             snapshot.artist = "Open Spotify"
             snapshot.status = "Spotify is closed"
             return snapshot
         }
 
         guard parts.first != "NO_TRACK", parts.count >= 8 else {
-            return WidgifySnapshot.idle
+            return SpotWidgetSnapshot.idle
         }
 
         let artworkURL = URL(string: parts[3])
@@ -122,7 +122,7 @@ enum WidgifyReader {
             artworkData = remoteData(from: artworkURL, timeout: 1.2)
         }
 
-        return WidgifySnapshot(
+        return SpotWidgetSnapshot(
             title: parts[0].isEmpty ? "Unknown track" : parts[0],
             artist: parts[1].isEmpty ? "Unknown artist" : parts[1],
             album: parts[2],
@@ -148,7 +148,7 @@ enum WidgifyReader {
         var status: String
     }
 
-    private static func currentSnapshotFromHostApp(loadArtwork: Bool) -> WidgifySnapshot? {
+    private static func currentSnapshotFromHostApp(loadArtwork: Bool) -> SpotWidgetSnapshot? {
         guard let url = URL(string: "http://127.0.0.1:47391/snapshot") else { return nil }
 
         var request = URLRequest(url: url)
@@ -166,7 +166,7 @@ enum WidgifyReader {
             artworkData = remoteData(from: artworkURL, timeout: 1.2)
         }
 
-        return WidgifySnapshot(
+        return SpotWidgetSnapshot(
             title: hosted.title,
             artist: hosted.artist,
             album: hosted.album,
@@ -180,7 +180,7 @@ enum WidgifyReader {
         )
     }
 
-    static func send(_ command: WidgifyCommand) {
+    static func send(_ command: SpotWidgetCommand) {
         if sendToHostApp(command) {
             return
         }
@@ -222,7 +222,7 @@ enum WidgifyReader {
         """)
     }
 
-    private static func sendToHostApp(_ command: WidgifyCommand) -> Bool {
+    private static func sendToHostApp(_ command: SpotWidgetCommand) -> Bool {
         guard var components = URLComponents(string: "http://127.0.0.1:47391/command") else {
             return false
         }
@@ -313,9 +313,9 @@ enum LyricsReader {
 
     private static let cache = LyricsCache()
 
-    static func lyrics(for snapshot: WidgifySnapshot) -> WidgifyLyrics {
-        guard snapshot.title != WidgifySnapshot.idle.title,
-              snapshot.artist != WidgifySnapshot.idle.artist,
+    static func lyrics(for snapshot: SpotWidgetSnapshot) -> SpotWidgetLyrics {
+        guard snapshot.title != SpotWidgetSnapshot.idle.title,
+              snapshot.artist != SpotWidgetSnapshot.idle.artist,
               snapshot.duration > 0 else {
             return .idle
         }
@@ -330,9 +330,9 @@ enum LyricsReader {
         return lyrics
     }
 
-    private static func fetchLyrics(for snapshot: WidgifySnapshot) -> WidgifyLyrics {
+    private static func fetchLyrics(for snapshot: SpotWidgetSnapshot) -> SpotWidgetLyrics {
         guard var components = URLComponents(string: "https://lrclib.net/api/get") else {
-            return WidgifyLyrics(status: "Lyrics unavailable", lines: [], isSynced: false)
+            return SpotWidgetLyrics(status: "Lyrics unavailable", lines: [], isSynced: false)
         }
 
         components.queryItems = [
@@ -343,23 +343,23 @@ enum LyricsReader {
         ]
 
         guard let url = components.url else {
-            return WidgifyLyrics(status: "Lyrics unavailable", lines: [], isSynced: false)
+            return SpotWidgetLyrics(status: "Lyrics unavailable", lines: [], isSynced: false)
         }
 
         var request = URLRequest(url: url)
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
         request.timeoutInterval = 1.5
-        request.setValue("Widgify/1.0 (https://lrclib.net)", forHTTPHeaderField: "User-Agent")
+        request.setValue("SpotWidget/1.0 (https://lrclib.net)", forHTTPHeaderField: "User-Agent")
 
         guard let (data, response) = try? EphemeralNetworkSession.shared.synchronousResponse(for: request),
               let httpResponse = response as? HTTPURLResponse,
               httpResponse.statusCode == 200,
               let record = try? JSONDecoder().decode(LRCLIBRecord.self, from: data) else {
-            return WidgifyLyrics(status: "No lyrics found", lines: [], isSynced: false)
+            return SpotWidgetLyrics(status: "No lyrics found", lines: [], isSynced: false)
         }
 
         if record.instrumental {
-            return WidgifyLyrics(status: "Instrumental", lines: [], isSynced: false)
+            return SpotWidgetLyrics(status: "Instrumental", lines: [], isSynced: false)
         }
 
         if let syncedLyrics = record.syncedLyrics,
@@ -373,34 +373,34 @@ enum LyricsReader {
                 .components(separatedBy: .newlines)
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
                 .filter { !$0.isEmpty }
-                .map { WidgifyLyrics.Line(time: nil, text: $0) }
+                .map { SpotWidgetLyrics.Line(time: nil, text: $0) }
 
             if !lines.isEmpty {
-                return WidgifyLyrics(status: "Lyrics", lines: lines, isSynced: false)
+                return SpotWidgetLyrics(status: "Lyrics", lines: lines, isSynced: false)
             }
         }
 
-        return WidgifyLyrics(status: "No lyrics found", lines: [], isSynced: false)
+        return SpotWidgetLyrics(status: "No lyrics found", lines: [], isSynced: false)
     }
 
-    private static func parseSyncedLyrics(_ source: String) -> WidgifyLyrics? {
+    private static func parseSyncedLyrics(_ source: String) -> SpotWidgetLyrics? {
         let lines = source
             .components(separatedBy: .newlines)
             .compactMap(parseSyncedLine)
             .filter { !$0.text.isEmpty }
 
         guard !lines.isEmpty else { return nil }
-        return WidgifyLyrics(status: "Synced lyrics", lines: lines, isSynced: true)
+        return SpotWidgetLyrics(status: "Synced lyrics", lines: lines, isSynced: true)
     }
 
-    private static func parseSyncedLine(_ source: String) -> WidgifyLyrics.Line? {
+    private static func parseSyncedLine(_ source: String) -> SpotWidgetLyrics.Line? {
         guard let close = source.firstIndex(of: "]") else { return nil }
         let timeToken = source[source.index(after: source.startIndex)..<close]
         let text = source[source.index(after: close)...]
             .trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard let time = parseTime(String(timeToken)) else { return nil }
-        return WidgifyLyrics.Line(time: time, text: text)
+        return SpotWidgetLyrics.Line(time: time, text: text)
     }
 
     private static func parseTime(_ source: String) -> TimeInterval? {
@@ -413,7 +413,7 @@ enum LyricsReader {
         return minutes * 60 + seconds
     }
 
-    private static func cacheKey(for snapshot: WidgifySnapshot) -> String {
+    private static func cacheKey(for snapshot: SpotWidgetSnapshot) -> String {
         [
             snapshot.title.lowercased(),
             snapshot.artist.lowercased(),
@@ -422,11 +422,11 @@ enum LyricsReader {
         ].joined(separator: "|")
     }
 
-    private static func cachedLyrics(for key: String) -> WidgifyLyrics? {
+    private static func cachedLyrics(for key: String) -> SpotWidgetLyrics? {
         cache.value(for: key)
     }
 
-    private static func store(_ lyrics: WidgifyLyrics, for key: String) {
+    private static func store(_ lyrics: SpotWidgetLyrics, for key: String) {
         cache.store(lyrics, for: key)
     }
 }
@@ -450,15 +450,15 @@ private final class LyricsPageCache: @unchecked Sendable {
 
 private final class LyricsCache: @unchecked Sendable {
     private let lock = NSLock()
-    private var values: [String: WidgifyLyrics] = [:]
+    private var values: [String: SpotWidgetLyrics] = [:]
 
-    func value(for key: String) -> WidgifyLyrics? {
+    func value(for key: String) -> SpotWidgetLyrics? {
         lock.lock()
         defer { lock.unlock() }
         return values[key]
     }
 
-    func store(_ lyrics: WidgifyLyrics, for key: String) {
+    func store(_ lyrics: SpotWidgetLyrics, for key: String) {
         lock.lock()
         values[key] = lyrics
         lock.unlock()

@@ -80,9 +80,9 @@ fi
 
 "$ROOT_DIR/scripts/package-app.sh" "${PACKAGE_ARGS[@]}"
 
-ZIP_PATH="$ROOT_DIR/dist/Widgify-$VERSION-macOS.zip"
+ZIP_PATH="$ROOT_DIR/dist/SpotWidget-$VERSION-macOS.zip"
 ZIP_SHA_PATH="$ZIP_PATH.sha256"
-DMG_PATH="$ROOT_DIR/dist/Widgify-$VERSION-macOS.dmg"
+DMG_PATH="$ROOT_DIR/dist/SpotWidget-$VERSION-macOS.dmg"
 DMG_SHA_PATH="$DMG_PATH.sha256"
 TAG="v$VERSION"
 
@@ -93,7 +93,7 @@ fi
 
 gh release create "$TAG" "$DMG_PATH" "$DMG_SHA_PATH" "$ZIP_PATH" "$ZIP_SHA_PATH" \
   --target main \
-  --title "Widgify $VERSION" \
-  --notes "Widgify $VERSION for macOS. Download the DMG, open it, drag Widgify.app to Applications, open it once, then add the widget from Edit Widgets. This build is intended for private testing unless it has been Developer ID signed and notarized." \
+  --title "SpotWidget $VERSION" \
+  --notes "SpotWidget $VERSION for macOS. Download the DMG, open it, drag SpotWidget.app to Applications, open it once, then add the widget from Edit Widgets. This build is intended for private testing unless it has been Developer ID signed and notarized." \
   $PRERELEASE_FLAG \
   $DRAFT_FLAG

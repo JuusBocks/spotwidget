@@ -3,22 +3,22 @@
 import PackageDescription
 
 let package = Package(
-    name: "Widgify",
+    name: "SpotWidget",
     platforms: [
         .macOS(.v14)
     ],
     products: [
-        .executable(name: "Widgify", targets: ["Widgify"]),
-        .executable(name: "WidgifyExtension", targets: ["WidgifyExtension"])
+        .executable(name: "SpotWidget", targets: ["SpotWidget"]),
+        .executable(name: "SpotWidgetExtension", targets: ["SpotWidgetExtension"])
     ],
     targets: [
         .executableTarget(
-            name: "Widgify",
-            path: "Sources/Widgify"
+            name: "SpotWidget",
+            path: "Sources/SpotWidget"
         ),
         .executableTarget(
-            name: "WidgifyExtension",
-            path: "Sources/WidgifyExtension",
+            name: "SpotWidgetExtension",
+            path: "Sources/SpotWidgetExtension",
             swiftSettings: [
                 .unsafeFlags(["-application-extension"])
             ]

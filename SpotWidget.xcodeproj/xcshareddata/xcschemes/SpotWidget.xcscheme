@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A10000000000000000000021"
-               BuildableName = "Widgify.app"
-               BlueprintName = "Widgify"
-               ReferencedContainer = "container:Widgify.xcodeproj">
+               BuildableName = "SpotWidget.app"
+               BlueprintName = "SpotWidget"
+               ReferencedContainer = "container:SpotWidget.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -44,9 +44,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A10000000000000000000021"
-            BuildableName = "Widgify.app"
-            BlueprintName = "Widgify"
-            ReferencedContainer = "container:Widgify.xcodeproj">
+            BuildableName = "SpotWidget.app"
+            BlueprintName = "SpotWidget"
+            ReferencedContainer = "container:SpotWidget.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -61,9 +61,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A10000000000000000000021"
-            BuildableName = "Widgify.app"
-            BlueprintName = "Widgify"
-            ReferencedContainer = "container:Widgify.xcodeproj">
+            BuildableName = "SpotWidget.app"
+            BlueprintName = "SpotWidget"
+            ReferencedContainer = "container:SpotWidget.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

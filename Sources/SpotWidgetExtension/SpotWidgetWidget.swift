@@ -2,38 +2,38 @@ import AppKit
 import SwiftUI
 import WidgetKit
 
-struct WidgifyEntry: TimelineEntry {
+struct SpotWidgetEntry: TimelineEntry {
     let date: Date
-    let snapshot: WidgifySnapshot
-    let lyrics: WidgifyLyrics
+    let snapshot: SpotWidgetSnapshot
+    let lyrics: SpotWidgetLyrics
 }
 
-struct WidgifyProvider: TimelineProvider {
+struct SpotWidgetProvider: TimelineProvider {
     private static let playingTimelineStep: TimeInterval = 1
     private static let minimumPlayingTimelineHorizon: TimeInterval = 90
     private static let maximumPlayingTimelineHorizon: TimeInterval = 300
 
-    func placeholder(in context: Context) -> WidgifyEntry {
-        WidgifyEntry(date: Date(), snapshot: .idle, lyrics: .idle)
+    func placeholder(in context: Context) -> SpotWidgetEntry {
+        SpotWidgetEntry(date: Date(), snapshot: .idle, lyrics: .idle)
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (WidgifyEntry) -> Void) {
-        let snapshot = WidgifyReader.currentSnapshot(loadArtwork: !context.isPreview)
-        completion(WidgifyEntry(date: Date(), snapshot: snapshot, lyrics: LyricsReader.lyrics(for: snapshot)))
+    func getSnapshot(in context: Context, completion: @escaping (SpotWidgetEntry) -> Void) {
+        let snapshot = SpotWidgetReader.currentSnapshot(loadArtwork: !context.isPreview)
+        completion(SpotWidgetEntry(date: Date(), snapshot: snapshot, lyrics: LyricsReader.lyrics(for: snapshot)))
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<WidgifyEntry>) -> Void) {
+    func getTimeline(in context: Context, completion: @escaping (Timeline<SpotWidgetEntry>) -> Void) {
         let now = Date()
-        let snapshot = WidgifyReader.currentSnapshot(loadArtwork: !context.isPreview)
+        let snapshot = SpotWidgetReader.currentSnapshot(loadArtwork: !context.isPreview)
         let lyrics = LyricsReader.lyrics(for: snapshot)
         let entries = timelineEntries(from: snapshot, lyrics: lyrics, startingAt: now)
         let refresh = entries.last?.date.addingTimeInterval(snapshot.isPlaying ? 2 : 60) ?? now.addingTimeInterval(60)
         completion(Timeline(entries: entries, policy: .after(refresh)))
     }
 
-    private func timelineEntries(from snapshot: WidgifySnapshot, lyrics: WidgifyLyrics, startingAt startDate: Date) -> [WidgifyEntry] {
+    private func timelineEntries(from snapshot: SpotWidgetSnapshot, lyrics: SpotWidgetLyrics, startingAt startDate: Date) -> [SpotWidgetEntry] {
         guard snapshot.isPlaying, snapshot.duration > 0 else {
-            return [WidgifyEntry(date: startDate, snapshot: snapshot, lyrics: lyrics)]
+            return [SpotWidgetEntry(date: startDate, snapshot: snapshot, lyrics: lyrics)]
         }
 
         let remaining = max(0, snapshot.duration - snapshot.position)
@@ -44,20 +44,20 @@ struct WidgifyProvider: TimelineProvider {
         return stride(from: 0, through: horizon, by: Self.playingTimelineStep).map { offset in
             var projectedSnapshot = snapshot
             projectedSnapshot.position = min(snapshot.duration, snapshot.position + offset)
-            return WidgifyEntry(date: startDate.addingTimeInterval(offset), snapshot: projectedSnapshot, lyrics: lyrics)
+            return SpotWidgetEntry(date: startDate.addingTimeInterval(offset), snapshot: projectedSnapshot, lyrics: lyrics)
         }
     }
 }
 
-struct WidgifyWidget: Widget {
-    static let kind = WidgifyWidgetConstants.kind
+struct SpotWidgetWidget: Widget {
+    static let kind = SpotWidgetWidgetConstants.kind
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: Self.kind, provider: WidgifyProvider()) { entry in
-            WidgifyWidgetEntryView(entry: entry)
+        StaticConfiguration(kind: Self.kind, provider: SpotWidgetProvider()) { entry in
+            SpotWidgetWidgetEntryView(entry: entry)
                 .containerBackground(.black, for: .widget)
         }
-        .configurationDisplayName("Widgify")
+        .configurationDisplayName("SpotWidget")
         .description("Shows the current track with artwork and playback controls.")
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge])
         .contentMarginsDisabled()
@@ -65,10 +65,10 @@ struct WidgifyWidget: Widget {
     }
 }
 
-struct WidgifyWidgetEntryView: View {
+struct SpotWidgetWidgetEntryView: View {
     @Environment(\.widgetFamily) private var family
     @Environment(\.widgetRenderingMode) private var renderingMode
-    let entry: WidgifyEntry
+    let entry: SpotWidgetEntry
 
     var body: some View {
         Group {
@@ -76,7 +76,7 @@ struct WidgifyWidgetEntryView: View {
             case .fullColor:
                 fullColorBody
             default:
-                AmbientWidgifyWidget(snapshot: entry.snapshot)
+                AmbientSpotWidgetWidget(snapshot: entry.snapshot)
             }
         }
         .transaction { transaction in
@@ -88,37 +88,37 @@ struct WidgifyWidgetEntryView: View {
     private var fullColorBody: some View {
         switch family {
         case .systemSmall:
-            SmallWidgifyWidget(snapshot: entry.snapshot)
+            SmallSpotWidgetWidget(snapshot: entry.snapshot)
         case .systemMedium:
-            MediumWidgifyWidget(snapshot: entry.snapshot)
+            MediumSpotWidgetWidget(snapshot: entry.snapshot)
         case .systemExtraLarge:
-            ExtraLargeWidgifyWidget(snapshot: entry.snapshot, lyrics: entry.lyrics)
+            ExtraLargeSpotWidgetWidget(snapshot: entry.snapshot, lyrics: entry.lyrics)
         default:
-            LargeWidgifyWidget(snapshot: entry.snapshot, lyrics: entry.lyrics)
+            LargeSpotWidgetWidget(snapshot: entry.snapshot, lyrics: entry.lyrics)
         }
     }
 }
 
-private struct AmbientWidgifyWidget: View {
+private struct AmbientSpotWidgetWidget: View {
     @Environment(\.widgetFamily) private var family
-    let snapshot: WidgifySnapshot
+    let snapshot: SpotWidgetSnapshot
 
     var body: some View {
         let ambientSnapshot = snapshot.roundedForAmbientDisplay(interval: 5)
 
         switch family {
         case .systemSmall:
-            SmallAmbientWidgifyWidget(snapshot: ambientSnapshot)
+            SmallAmbientSpotWidgetWidget(snapshot: ambientSnapshot)
         case .systemMedium:
-            MediumAmbientWidgifyWidget(snapshot: ambientSnapshot)
+            MediumAmbientSpotWidgetWidget(snapshot: ambientSnapshot)
         default:
-            WideAmbientWidgifyWidget(snapshot: ambientSnapshot)
+            WideAmbientSpotWidgetWidget(snapshot: ambientSnapshot)
         }
     }
 }
 
-private struct SmallAmbientWidgifyWidget: View {
-    let snapshot: WidgifySnapshot
+private struct SmallAmbientSpotWidgetWidget: View {
+    let snapshot: SpotWidgetSnapshot
 
     var body: some View {
         GeometryReader { proxy in
@@ -147,8 +147,8 @@ private struct SmallAmbientWidgifyWidget: View {
     }
 }
 
-private struct MediumAmbientWidgifyWidget: View {
-    let snapshot: WidgifySnapshot
+private struct MediumAmbientSpotWidgetWidget: View {
+    let snapshot: SpotWidgetSnapshot
 
     var body: some View {
         GeometryReader { proxy in
@@ -177,8 +177,8 @@ private struct MediumAmbientWidgifyWidget: View {
     }
 }
 
-private struct WideAmbientWidgifyWidget: View {
-    let snapshot: WidgifySnapshot
+private struct WideAmbientSpotWidgetWidget: View {
+    let snapshot: SpotWidgetSnapshot
 
     var body: some View {
         GeometryReader { proxy in
@@ -207,8 +207,8 @@ private struct WideAmbientWidgifyWidget: View {
     }
 }
 
-private struct SmallWidgifyWidget: View {
-    let snapshot: WidgifySnapshot
+private struct SmallSpotWidgetWidget: View {
+    let snapshot: SpotWidgetSnapshot
 
     var body: some View {
         GeometryReader { proxy in
@@ -264,8 +264,8 @@ private struct SmallWidgifyWidget: View {
     }
 }
 
-private struct MediumWidgifyWidget: View {
-    let snapshot: WidgifySnapshot
+private struct MediumSpotWidgetWidget: View {
+    let snapshot: SpotWidgetSnapshot
 
     var body: some View {
         GeometryReader { proxy in
@@ -308,9 +308,9 @@ private struct MediumWidgifyWidget: View {
     }
 }
 
-private struct LargeWidgifyWidget: View {
-    let snapshot: WidgifySnapshot
-    let lyrics: WidgifyLyrics
+private struct LargeSpotWidgetWidget: View {
+    let snapshot: SpotWidgetSnapshot
+    let lyrics: SpotWidgetLyrics
 
     var body: some View {
         GeometryReader { proxy in
@@ -360,9 +360,9 @@ private struct LargeWidgifyWidget: View {
     }
 }
 
-private struct ExtraLargeWidgifyWidget: View {
-    let snapshot: WidgifySnapshot
-    let lyrics: WidgifyLyrics
+private struct ExtraLargeSpotWidgetWidget: View {
+    let snapshot: SpotWidgetSnapshot
+    let lyrics: SpotWidgetLyrics
 
     var body: some View {
         GeometryReader { proxy in
@@ -420,7 +420,7 @@ private struct ExtraLargeWidgifyWidget: View {
 }
 
 private struct TrackSummary: View {
-    let snapshot: WidgifySnapshot
+    let snapshot: SpotWidgetSnapshot
     var titleFont: Font
     var artistFont: Font = .headline.weight(.semibold)
     var albumFont: Font = .caption
@@ -448,7 +448,7 @@ private struct TrackSummary: View {
 }
 
 private struct CompactTrackSummary: View {
-    let snapshot: WidgifySnapshot
+    let snapshot: SpotWidgetSnapshot
 
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
@@ -473,8 +473,8 @@ private struct CompactTrackSummary: View {
 }
 
 private struct LyricsPanel: View {
-    let snapshot: WidgifySnapshot
-    let lyrics: WidgifyLyrics
+    let snapshot: SpotWidgetSnapshot
+    let lyrics: SpotWidgetLyrics
     var visibleLineLimit = 3
     var currentLineLimit = 2
     var prominentCurrentLine = false
@@ -609,7 +609,7 @@ private struct LyricsPanel: View {
         showsPlainLyricsPaging && lyrics.hasLyrics && !lyrics.isSynced && maxPlainLyricsPage > 0
     }
 
-    private var visibleLines: [WidgifyLyrics.Line] {
+    private var visibleLines: [SpotWidgetLyrics.Line] {
         guard lyrics.hasLyrics else { return [] }
         guard !lyrics.isSynced else {
             return lyrics.visibleLines(at: snapshot.position, limit: visibleLineLimit)
@@ -626,20 +626,20 @@ private struct LyricsPanel: View {
         return isCurrent ? currentLineLimit : 1
     }
 
-    private func isFeaturedLine(_ line: WidgifyLyrics.Line) -> Bool {
+    private func isFeaturedLine(_ line: SpotWidgetLyrics.Line) -> Bool {
         guard lyrics.isSynced else {
             return visibleLines.first == line
         }
         return lyrics.isCurrent(line, at: snapshot.position)
     }
 
-    private func opacity(for line: WidgifyLyrics.Line, isFeatured: Bool) -> Double {
+    private func opacity(for line: SpotWidgetLyrics.Line, isFeatured: Bool) -> Double {
         guard !isFeatured else { return 0.98 }
         guard lyrics.isSynced, let time = line.time else { return 0.58 }
         return time > snapshot.position ? 0.58 : 0.34
     }
 
-    private func blurRadius(for line: WidgifyLyrics.Line, isFeatured: Bool) -> CGFloat {
+    private func blurRadius(for line: SpotWidgetLyrics.Line, isFeatured: Bool) -> CGFloat {
         guard !isFeatured else { return 0 }
         guard lyrics.isSynced, let time = line.time else { return 0.25 }
         return time > snapshot.position ? 0.25 : 0.75
@@ -751,7 +751,7 @@ private struct LyricsPageButton: View {
 }
 
 private struct FullArtworkBackground: View {
-    let snapshot: WidgifySnapshot
+    let snapshot: SpotWidgetSnapshot
 
     var body: some View {
         ZStack {
@@ -787,7 +787,7 @@ private struct FullArtworkBackground: View {
 }
 
 private struct ArtworkBackdrop: View {
-    let snapshot: WidgifySnapshot
+    let snapshot: SpotWidgetSnapshot
 
     var body: some View {
         if let artworkImage {
@@ -808,7 +808,7 @@ private struct ArtworkBackdrop: View {
 }
 
 private struct ArtworkView: View {
-    let snapshot: WidgifySnapshot
+    let snapshot: SpotWidgetSnapshot
     let cornerRadius: CGFloat
 
     var body: some View {
@@ -851,7 +851,7 @@ private struct FullColorArtworkImage: View {
 }
 
 private struct ProgressRow: View {
-    let snapshot: WidgifySnapshot
+    let snapshot: SpotWidgetSnapshot
 
     var body: some View {
         VStack(spacing: 4) {
@@ -883,7 +883,7 @@ private struct ProgressRow: View {
 }
 
 private struct CompactProgressRow: View {
-    let snapshot: WidgifySnapshot
+    let snapshot: SpotWidgetSnapshot
     var showsTime = false
 
     var body: some View {
@@ -913,7 +913,7 @@ private struct CompactProgressRow: View {
 }
 
 private struct MiniProgressBar: View {
-    let snapshot: WidgifySnapshot
+    let snapshot: SpotWidgetSnapshot
 
     var body: some View {
         Capsule()
@@ -942,7 +942,7 @@ private struct MiniProgressBar: View {
 }
 
 private struct PlaybackControlStrip: View {
-    let snapshot: WidgifySnapshot
+    let snapshot: SpotWidgetSnapshot
 
     var body: some View {
         HStack(spacing: 10) {
@@ -969,7 +969,7 @@ private struct PrimaryPlaybackButton: View {
     let isPlaying: Bool
 
     var body: some View {
-        Link(destination: WidgifyCommandURL.url(for: isPlaying ? .pause : .play)) {
+        Link(destination: SpotWidgetCommandURL.url(for: isPlaying ? .pause : .play)) {
             Image(systemName: isPlaying ? "pause.fill" : "play.fill")
                 .imageScale(.small)
                 .fontWeight(.black)
@@ -992,12 +992,12 @@ private struct ControlButton: View {
     @Environment(\.widgetRenderingMode) private var renderingMode
 
     let systemName: String
-    let command: WidgifyCommand
+    let command: SpotWidgetCommand
     var isActive = false
     var inactiveOpacity = 0.94
 
     var body: some View {
-        Link(destination: WidgifyCommandURL.url(for: command)) {
+        Link(destination: SpotWidgetCommandURL.url(for: command)) {
             ZStack {
                 controlImage
 
@@ -1028,13 +1028,13 @@ private struct ControlButton: View {
     }
 }
 
-private enum WidgifyCommandURL {
-    static func url(for command: WidgifyCommand) -> URL {
+private enum SpotWidgetCommandURL {
+    static func url(for command: SpotWidgetCommand) -> URL {
         var components = URLComponents()
-        components.scheme = "widgify"
+        components.scheme = "spotwidget"
         components.host = "command"
         components.queryItems = [URLQueryItem(name: "command", value: command.rawValue)]
-        return components.url ?? URL(string: "widgify://command?command=\(command.rawValue)")!
+        return components.url ?? URL(string: "spotwidget://command?command=\(command.rawValue)")!
     }
 }
 
@@ -1044,8 +1044,8 @@ private func formatTime(_ seconds: TimeInterval) -> String {
     return "\(total / 60):\(String(format: "%02d", total % 60))"
 }
 
-private extension WidgifySnapshot {
-    func roundedForAmbientDisplay(interval: TimeInterval) -> WidgifySnapshot {
+private extension SpotWidgetSnapshot {
+    func roundedForAmbientDisplay(interval: TimeInterval) -> SpotWidgetSnapshot {
         guard interval > 0, duration > 0 else { return self }
 
         var snapshot = self

@@ -2,8 +2,8 @@ import WidgetKit
 import SwiftUI
 
 @main
-struct WidgifyWidgetBundle: WidgetBundle {
+struct SpotWidgetWidgetBundle: WidgetBundle {
     var body: some Widget {
-        WidgifyWidget()
+        SpotWidgetWidget()
     }
 }

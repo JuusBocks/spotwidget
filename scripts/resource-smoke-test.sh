@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 DURATION_SECONDS=300
 INTERVAL_SECONDS=1
-PROCESS_NAME="Widgify"
+PROCESS_NAME="SpotWidget"
 OUTPUT_DIR="$ROOT_DIR/reports"
 LAUNCH_APP=false
 MAX_AVG_CPU="2.0"
@@ -14,13 +14,13 @@ usage() {
   cat <<'USAGE'
 Usage: ./scripts/resource-smoke-test.sh [options]
 
-Samples Widgify CPU and memory usage and writes a small report to reports/.
-Run it while Spotify is playing and the Widgify widget is on the desktop.
+Samples SpotWidget CPU and memory usage and writes a small report to reports/.
+Run it while Spotify is playing and the SpotWidget widget is on the desktop.
 
 Options:
   --duration SECONDS       Test duration. Default: 300.
   --interval SECONDS       Sample interval. Default: 1.
-  --launch                 Open /Applications/Widgify.app before sampling.
+  --launch                 Open /Applications/SpotWidget.app before sampling.
   --max-avg-cpu PERCENT    Fail if average CPU is above this. Default: 2.0.
   --max-rss-mb MB          Fail if max resident memory is above this. Default: 150.
   -h, --help               Show this help.
@@ -72,7 +72,7 @@ CSV_PATH="$OUTPUT_DIR/resource-smoke-$STAMP.csv"
 REPORT_PATH="$OUTPUT_DIR/resource-smoke-$STAMP.txt"
 
 if [[ "$LAUNCH_APP" == true ]]; then
-  open "/Applications/Widgify.app"
+  open "/Applications/SpotWidget.app"
   sleep 3
 fi
 
@@ -115,7 +115,7 @@ awk \
       cpu_ok = avg_cpu <= max_avg_cpu
       rss_ok = max_rss <= max_rss_mb
 
-      print "Widgify resource smoke test"
+      print "SpotWidget resource smoke test"
       print ""
       print "Duration: " duration "s"
       print "Interval: " interval "s"
