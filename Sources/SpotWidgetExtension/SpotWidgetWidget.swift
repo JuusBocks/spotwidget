@@ -964,10 +964,11 @@ private struct CompactPlaybackControlStrip: View {
     let snapshot: SpotWidgetSnapshot
 
     var body: some View {
-        HStack(spacing: 15) {
-            ControlButton(systemName: "backward.fill", command: .previous)
-            PrimaryPlaybackButton(isPlaying: snapshot.isPlaying)
-            ControlButton(systemName: "forward.fill", command: .next)
+        HStack(spacing: 8) {
+            ControlButton(systemName: "music.note.list", command: .openSpotify, size: 24)
+            ControlButton(systemName: "backward.fill", command: .previous, size: 24)
+            PrimaryPlaybackButton(isPlaying: snapshot.isPlaying, size: 30, padding: 5)
+            ControlButton(systemName: "forward.fill", command: .next, size: 24)
         }
         .foregroundStyle(.white.opacity(0.94))
         .frame(maxWidth: .infinity, minHeight: 30, alignment: .center)
@@ -976,6 +977,8 @@ private struct CompactPlaybackControlStrip: View {
 
 private struct PrimaryPlaybackButton: View {
     let isPlaying: Bool
+    var size: CGFloat = 34
+    var padding: CGFloat = 6
 
     var body: some View {
         Link(destination: SpotWidgetCommandURL.url(for: isPlaying ? .pause : .play)) {
@@ -984,7 +987,7 @@ private struct PrimaryPlaybackButton: View {
                 .fontWeight(.black)
                 .foregroundStyle(.black.opacity(0.88))
                 .offset(x: isPlaying ? 0 : 0.35)
-                .padding(6)
+                .padding(padding)
                 .background {
                     Circle()
                         .fill(.white.opacity(0.96))
@@ -992,7 +995,7 @@ private struct PrimaryPlaybackButton: View {
                 }
         }
         .buttonStyle(.plain)
-        .frame(width: 34, height: 34)
+        .frame(width: size, height: size)
         .contentShape(Rectangle())
     }
 }
@@ -1004,6 +1007,7 @@ private struct ControlButton: View {
     let command: SpotWidgetCommand
     var isActive = false
     var inactiveOpacity = 0.94
+    var size: CGFloat = 28
 
     var body: some View {
         Link(destination: SpotWidgetCommandURL.url(for: command)) {
@@ -1017,7 +1021,7 @@ private struct ControlButton: View {
             }
         }
         .buttonStyle(.plain)
-        .frame(width: 28, height: 28)
+        .frame(width: size, height: size)
         .contentShape(Rectangle())
     }
 
