@@ -212,48 +212,43 @@ private struct SmallSpotWidgetWidget: View {
 
     var body: some View {
         GeometryReader { proxy in
-            let padding: CGFloat = 10
+            let padding: CGFloat = 11
             let contentWidth = max(0, proxy.size.width - padding * 2)
             let contentHeight = max(0, proxy.size.height - padding * 2)
-            let artSize = min(max(44, contentWidth * 0.38), 58)
+            let artSize = min(max(42, contentWidth * 0.34), 52)
+            let headerHeight = min(62, max(48, contentHeight - 56))
 
             ZStack(alignment: .topLeading) {
                 FullArtworkBackground(snapshot: snapshot)
 
-                VStack(alignment: .leading, spacing: 7) {
+                VStack(alignment: .leading, spacing: 8) {
                     HStack(alignment: .top, spacing: 8) {
                         ArtworkView(snapshot: snapshot, cornerRadius: 9)
                             .frame(width: artSize, height: artSize)
                             .shadow(color: .black.opacity(0.34), radius: 8, y: 4)
 
-                        VStack(alignment: .leading, spacing: 3) {
+                        VStack(alignment: .leading, spacing: 4) {
                             Text(snapshot.title)
                                 .font(.caption.weight(.bold))
                                 .foregroundStyle(.white)
                                 .lineLimit(2)
-                                .minimumScaleFactor(0.72)
+                                .minimumScaleFactor(0.68)
 
                             Text(snapshot.artist)
                                 .font(.caption2.weight(.semibold))
                                 .foregroundStyle(.white.opacity(0.76))
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.82)
-
-                            Text(snapshot.album.isEmpty ? "Spotify desktop" : snapshot.album)
-                                .font(.caption2)
-                                .foregroundStyle(.white.opacity(0.52))
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.82)
                         }
                         .frame(width: max(60, contentWidth - artSize - 8), alignment: .leading)
                     }
-                    .frame(width: contentWidth, height: min(76, contentHeight - 34), alignment: .topLeading)
+                    .frame(width: contentWidth, height: headerHeight, alignment: .topLeading)
 
                     Spacer(minLength: 0)
 
                     CompactProgressRow(snapshot: snapshot, showsTime: true)
 
-                    PlaybackControlStrip(snapshot: snapshot)
+                    CompactPlaybackControlStrip(snapshot: snapshot)
                         .font(.caption)
                 }
                 .frame(width: contentWidth, height: contentHeight, alignment: .topLeading)
@@ -962,6 +957,20 @@ private struct PlaybackControlStrip: View {
         }
         .foregroundStyle(.white.opacity(0.94))
         .frame(maxWidth: .infinity, minHeight: 24, alignment: .center)
+    }
+}
+
+private struct CompactPlaybackControlStrip: View {
+    let snapshot: SpotWidgetSnapshot
+
+    var body: some View {
+        HStack(spacing: 15) {
+            ControlButton(systemName: "backward.fill", command: .previous)
+            PrimaryPlaybackButton(isPlaying: snapshot.isPlaying)
+            ControlButton(systemName: "forward.fill", command: .next)
+        }
+        .foregroundStyle(.white.opacity(0.94))
+        .frame(maxWidth: .infinity, minHeight: 30, alignment: .center)
     }
 }
 
