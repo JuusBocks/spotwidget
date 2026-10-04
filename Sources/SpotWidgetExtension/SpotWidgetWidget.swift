@@ -231,8 +231,8 @@ private struct SmallSpotWidgetWidget: View {
                             Text(snapshot.title)
                                 .font(.caption.weight(.bold))
                                 .foregroundStyle(.white)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.76)
+                                .lineLimit(2)
+                                .minimumScaleFactor(0.70)
 
                             Text(snapshot.artist)
                                 .font(.caption2.weight(.semibold))
@@ -972,10 +972,10 @@ private struct CompactPlaybackControlStrip: View {
     var body: some View {
         HStack(spacing: 4) {
             ControlButton(systemName: "shuffle", command: .shuffle, isActive: snapshot.isShuffling, inactiveOpacity: 0.54, size: 22)
-            ControlButton(systemName: "music.note.list", command: .openSpotify, size: 22)
             ControlButton(systemName: "backward.fill", command: .previous, size: 22)
             PrimaryPlaybackButton(isPlaying: snapshot.isPlaying, size: 28, padding: 4.5)
             ControlButton(systemName: "forward.fill", command: .next, size: 22)
+            ControlButton(systemName: "music.note.list", command: .openSpotify, size: 22)
         }
         .foregroundStyle(.white.opacity(0.94))
         .frame(maxWidth: .infinity, minHeight: 30, alignment: .center)
