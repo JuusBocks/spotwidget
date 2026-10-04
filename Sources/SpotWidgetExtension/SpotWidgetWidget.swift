@@ -216,7 +216,7 @@ private struct SmallSpotWidgetWidget: View {
             let contentWidth = max(0, proxy.size.width - padding * 2)
             let contentHeight = max(0, proxy.size.height - padding * 2)
             let artSize = min(max(42, contentWidth * 0.34), 52)
-            let headerHeight = min(62, max(48, contentHeight - 56))
+            let headerHeight = min(68, max(54, contentHeight - 56))
 
             ZStack(alignment: .topLeading) {
                 FullArtworkBackground(snapshot: snapshot)
@@ -227,7 +227,7 @@ private struct SmallSpotWidgetWidget: View {
                             .frame(width: artSize, height: artSize)
                             .shadow(color: .black.opacity(0.34), radius: 8, y: 4)
 
-                        VStack(alignment: .leading, spacing: 4) {
+                        VStack(alignment: .leading, spacing: 2) {
                             Text(snapshot.title)
                                 .font(.caption.weight(.bold))
                                 .foregroundStyle(.white)
@@ -243,8 +243,8 @@ private struct SmallSpotWidgetWidget: View {
                             Text(snapshot.album.isEmpty ? "Spotify desktop" : snapshot.album)
                                 .font(.caption2.weight(.medium))
                                 .foregroundStyle(.white.opacity(0.54))
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.72)
+                                .lineLimit(2)
+                                .minimumScaleFactor(0.66)
                         }
                         .frame(width: max(60, contentWidth - artSize - 8), alignment: .leading)
                     }
