@@ -237,8 +237,14 @@ private struct SmallSpotWidgetWidget: View {
                             Text(snapshot.artist)
                                 .font(.caption2.weight(.semibold))
                                 .foregroundStyle(.white.opacity(0.76))
-                                .lineLimit(2)
+                                .lineLimit(1)
                                 .minimumScaleFactor(0.82)
+
+                            Text(snapshot.album.isEmpty ? "Spotify desktop" : snapshot.album)
+                                .font(.caption2.weight(.medium))
+                                .foregroundStyle(.white.opacity(0.54))
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.72)
                         }
                         .frame(width: max(60, contentWidth - artSize - 8), alignment: .leading)
                     }
