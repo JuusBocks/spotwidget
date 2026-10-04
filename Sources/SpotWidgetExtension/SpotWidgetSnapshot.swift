@@ -26,8 +26,8 @@ struct SpotWidgetSnapshot: Equatable {
     )
 }
 
-struct SpotWidgetLyrics: Equatable {
-    struct Line: Equatable {
+struct SpotWidgetLyrics: Codable, Equatable {
+    struct Line: Codable, Equatable {
         var time: TimeInterval?
         var text: String
     }
@@ -434,16 +434,26 @@ enum LyricsReader {
 private final class LyricsPageCache: @unchecked Sendable {
     private let lock = NSLock()
     private var values: [String: Int] = [:]
+    private let defaults = UserDefaults.standard
+    private let keyPrefix = "lyrics.page."
 
     func page(for key: String) -> Int {
         lock.lock()
         defer { lock.unlock() }
-        return values[key] ?? 0
+
+        if let page = values[key] {
+            return page
+        }
+
+        let page = defaults.integer(forKey: keyPrefix + key)
+        values[key] = page
+        return page
     }
 
     func store(_ page: Int, for key: String) {
         lock.lock()
         values[key] = page
+        defaults.set(page, forKey: keyPrefix + key)
         lock.unlock()
     }
 }
@@ -451,16 +461,32 @@ private final class LyricsPageCache: @unchecked Sendable {
 private final class LyricsCache: @unchecked Sendable {
     private let lock = NSLock()
     private var values: [String: SpotWidgetLyrics] = [:]
+    private let defaults = UserDefaults.standard
+    private let keyPrefix = "lyrics.cache."
 
     func value(for key: String) -> SpotWidgetLyrics? {
         lock.lock()
         defer { lock.unlock() }
-        return values[key]
+
+        if let lyrics = values[key] {
+            return lyrics
+        }
+
+        guard let data = defaults.data(forKey: keyPrefix + key),
+              let lyrics = try? JSONDecoder().decode(SpotWidgetLyrics.self, from: data) else {
+            return nil
+        }
+
+        values[key] = lyrics
+        return lyrics
     }
 
     func store(_ lyrics: SpotWidgetLyrics, for key: String) {
         lock.lock()
         values[key] = lyrics
+        if let data = try? JSONEncoder().encode(lyrics) {
+            defaults.set(data, forKey: keyPrefix + key)
+        }
         lock.unlock()
     }
 }
