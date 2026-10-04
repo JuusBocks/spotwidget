@@ -946,19 +946,11 @@ private struct PlaybackControlStrip: View {
     let snapshot: SpotWidgetSnapshot
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 12) {
             ControlButton(systemName: "shuffle", command: .shuffle, isActive: snapshot.isShuffling, inactiveOpacity: 0.54)
-
-            Spacer(minLength: 0)
-
-            HStack(spacing: 12) {
-                ControlButton(systemName: "backward.fill", command: .previous)
-                PrimaryPlaybackButton(isPlaying: snapshot.isPlaying)
-                ControlButton(systemName: "forward.fill", command: .next)
-            }
-
-            Spacer(minLength: 0)
-
+            ControlButton(systemName: "backward.fill", command: .previous)
+            PrimaryPlaybackButton(isPlaying: snapshot.isPlaying)
+            ControlButton(systemName: "forward.fill", command: .next)
             ControlButton(systemName: "music.note.list", command: .openSpotify)
         }
         .foregroundStyle(.white.opacity(0.94))
