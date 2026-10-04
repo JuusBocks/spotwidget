@@ -231,13 +231,13 @@ private struct SmallSpotWidgetWidget: View {
                             Text(snapshot.title)
                                 .font(.caption.weight(.bold))
                                 .foregroundStyle(.white)
-                                .lineLimit(2)
-                                .minimumScaleFactor(0.68)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.76)
 
                             Text(snapshot.artist)
                                 .font(.caption2.weight(.semibold))
                                 .foregroundStyle(.white.opacity(0.76))
-                                .lineLimit(1)
+                                .lineLimit(2)
                                 .minimumScaleFactor(0.82)
                         }
                         .frame(width: max(60, contentWidth - artSize - 8), alignment: .leading)
