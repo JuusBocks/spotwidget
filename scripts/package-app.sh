@@ -93,7 +93,6 @@ XCODEBUILD_ARGS=(
   -destination "platform=macOS"
   -derivedDataPath "$DERIVED_DATA_PATH"
   -allowProvisioningUpdates
-  build
 )
 
 if [[ -n "$TEAM_ID" ]]; then
@@ -101,7 +100,8 @@ if [[ -n "$TEAM_ID" ]]; then
 fi
 
 echo "Building SpotWidget $CONFIGURATION..."
-xcodebuild "${XCODEBUILD_ARGS[@]}"
+xcodebuild "${XCODEBUILD_ARGS[@]}" clean
+xcodebuild "${XCODEBUILD_ARGS[@]}" build
 
 BUILT_APP="$DERIVED_DATA_PATH/Build/Products/$CONFIGURATION/SpotWidget.app"
 ZIP_PATH="$DIST_DIR/SpotWidget-$VERSION-macOS.zip"
